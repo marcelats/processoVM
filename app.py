@@ -6,7 +6,7 @@ import tempfile
 import os
 import glob
 import logging
-from flask import jsonify
+
 app = FastAPI()
 client = docker.from_env()
 
@@ -101,8 +101,8 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
 
             proc = subprocess.run(cmd, capture_output=True, text=True, timeout=10)
 
-        return jsonify({
+        return {
             'stdout': proc.stdout,
             'stderr': proc.stderr,
             'returncode': proc.returncode
-        })
+        }
