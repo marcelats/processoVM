@@ -26,12 +26,14 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
                 command=f"python /tmp/code.py",
                 volumes={tmpdir: {"bind": "/tmp", "mode": "rw"}},  # monta arquivo
                 detach=True,
-                auto_remove=True            # o container é removido após terminar
+                auto_remove=False            # o container é removido após terminar
             )
 
             result = container.wait(timeout=10)
-            logs = container.logs()
-
+            logs = container.logs()  # agora funciona
+            container.remove()
+            stdout = logs.decode()
+            
         elif lang == 'Java':
             jar_path = os.path.join(os.path.dirname(__file__), 'javasim-2.3.jar')
             if not os.path.exists(jar_path):
@@ -111,7 +113,7 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
             proc = subprocess.run(cmd, capture_output=True, text=True, timeout=10)
 
         return {
-            'stdout': proc.stdout,
-            'stderr': proc.stderr,
-            'returncode': proc.returncode
+            "status": "finished",
+            "returncode": result.get("StatusCode", -1),
+            "output": stdout
         }
