@@ -17,7 +17,7 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
     with tempfile.TemporaryDirectory() as tmpdir:
         if lang == 'Python':
             file_path = os.path.join(tmpdir, 'code.py')
-            with open(file_path, 'w') as f:
+            with open(file_path, 'wb') as f:
                 f.write(contents)
             cmd = ['python3', file_path]
             proc = subprocess.run(cmd, capture_output=True, text=True, timeout=10)
@@ -59,7 +59,7 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
                     
         elif lang == 'C SMPL':
             file_path = os.path.join(tmpdir, 'code.c')
-            with open(file_path, 'w') as f:
+            with open(file_path, 'wb') as f:
                 f.write(contents)
 
             # Ajuste para onde está instalada sua biblioteca SMPL
@@ -94,7 +94,7 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
         
         else:
             file_path = os.path.join(tmpdir, 'code.R')
-            with open(file_path, 'w') as f:
+            with open(file_path, 'wb') as f:
                 f.write(contents)
             cmd = ['Rscript', file_path]
 
