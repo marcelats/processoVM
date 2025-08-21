@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, UploadFile, File, Form
 import docker
 import zipfile
 import subprocess
@@ -10,16 +10,15 @@ app = FastAPI()
 client = docker.from_env()
 
 @app.post("/execute")
-async def execute(request: Request):
-    code = request.files['arquivo']
-    lang = request.form['lang'].strip()
+async def execute(code: UploadFile = File(...), lang: str = Form(...)):
     logging.basicConfig(level=logging.INFO)
+    contents = await code.read()
 
     with tempfile.TemporaryDirectory() as tmpdir:
         if lang == 'Python':
             file_path = os.path.join(tmpdir, 'code.py')
             with open(file_path, 'w') as f:
-                f.write(code.read().decode())
+                f.write(contents.read().decode())
             cmd = ['python3', file_path]
             proc = subprocess.run(cmd, capture_output=True, text=True, timeout=10)
 
@@ -31,7 +30,7 @@ async def execute(request: Request):
                 logging.info(f"JAR localizado: {jar_path}")
 
             zip_path = os.path.join(tmpdir, 'codigo.zip')
-            code.save(zip_path)
+            contents.save(zip_path)
             with zipfile.ZipFile(zip_path, 'r') as zip_ref:
                 zip_ref.extractall(tmpdir)
             java_files = glob.glob(os.path.join(tmpdir, "*.java"))    
@@ -61,7 +60,7 @@ async def execute(request: Request):
         elif lang == 'C SMPL':
             file_path = os.path.join(tmpdir, 'code.c')
             with open(file_path, 'w') as f:
-                f.write(code.read().decode())
+                f.write(contents.read().decode())
 
             # Ajuste para onde está instalada sua biblioteca SMPL
             smpl_include_path = '/usr/local/include'  # Ou onde estiver o smpl.h
@@ -96,7 +95,7 @@ async def execute(request: Request):
         else:
             file_path = os.path.join(tmpdir, 'code.R')
             with open(file_path, 'w') as f:
-                f.write(code.read().decode())
+                f.write(contents.read().decode())
             cmd = ['Rscript', file_path]
 
             proc = subprocess.run(cmd, capture_output=True, text=True, timeout=10)
