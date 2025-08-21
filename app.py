@@ -20,8 +20,17 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
             file_path = os.path.join(tmpdir, 'code.py')
             with open(file_path, 'wb') as f:
                 f.write(contents)
-            cmd = ['python3', file_path]
-            proc = subprocess.run(cmd, capture_output=True, text=True, timeout=10)
+
+            container = client.containers.run(
+                "python:3.11",              # imagem base
+                command=f"python /tmp/code.py",
+                volumes={tmpdir: {"bind": "/tmp", "mode": "rw"}},  # monta arquivo
+                detach=True,
+                auto_remove=True            # o container é removido após terminar
+            )
+
+            result = container.wait(timeout=10)
+            logs = container.logs()
 
         elif lang == 'Java':
             jar_path = os.path.join(os.path.dirname(__file__), 'javasim-2.3.jar')
