@@ -27,7 +27,7 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
 
             container = client.containers.run(
                 "python:3.11",              # imagem base
-                command=f"python /tmp/{os.path.basename(file_path)}",
+                command=f"python /tmp/docker_exec/{os.path.basename(file_path)}",
                 volumes={tmpdir: {"bind": "/tmp", "mode": "rw"}},  # monta arquivo
                 detach=True,
                 auto_remove=False            # o container é removido após terminar
