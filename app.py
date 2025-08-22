@@ -66,7 +66,6 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
             
             return JSONResponse({
                 "status": "finished",
-                "exit_code": exit_status.get("StatusCode", -1),
                 "output": logs
             })
         
