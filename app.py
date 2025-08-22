@@ -26,17 +26,20 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
                 f.write(contents)
 
             container = client.containers.run(
-                "python:3.11",              # imagem base
-                command=f"python /tmp/docker_exec/{os.path.basename(file_path)}",
-                volumes={tmpdir: {"bind": "/tmp", "mode": "rw"}},  # monta arquivo
+                "python:3.11",
+                command=f"python /tmp/{os.path.basename(file_path)} > /tmp/output.txt 2>&1",
+                volumes={tmpdir: {"bind": "/tmp", "mode": "rw"}},
                 detach=True,
-                auto_remove=False            # o container é removido após terminar
+                auto_remove=True
             )
+            container.wait()
+            with open(os.path.join(tmpdir, "output.txt"), "r") as f:
+                stdout = f.read()
 
-            result = container.wait(timeout=10)
-            logs = container.logs()  # agora funciona
-            container.remove()
-            stdout = logs.decode()
+            #result = container.wait(timeout=10)
+            #logs = container.logs()  # agora funciona
+           # container.remove()
+            #stdout = logs.decode()
             
         elif lang == 'Java':
             jar_path = os.path.join(os.path.dirname(__file__), 'javasim-2.3.jar')
