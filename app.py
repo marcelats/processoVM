@@ -61,7 +61,7 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
 
         container = client.containers.run(
             "python:3.11-slim",
-            command="python /workspace/code.py;sleep 300",  # note o path no container
+            command="sleep 300",  # note o path no container
             volumes={tmpdir: {"bind": "/workspace", "mode": "rw"}},
             detach=True,
             auto_remove=False
@@ -73,6 +73,8 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
 
         exit_code, output = container.exec_run(f"cat {container_file_path}")
         print(output.decode())
+
+        container.exec_run("python /workspace/code.py")
 
         # Depois finalize o container
         logs = container.logs().decode("utf-8")
