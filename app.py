@@ -17,6 +17,10 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
 
     with tempfile.TemporaryDirectory() as tmpdir:
         if lang == 'Python':
+            tmpdir = "/tmp/docker_exec"
+            os.makedirs(tmpdir, exist_ok=True)
+            os.chmod(tmpdir, 0o777)
+
             file_path = os.path.join(tmpdir, 'code.py')
             with open(file_path, 'wb') as f:
                 f.write(contents)
