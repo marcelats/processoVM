@@ -60,12 +60,14 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
         # Cria o container (não auto_remove)
 
         container = client.containers.run(
-            "python:3.11-slim",
+            "python-simpy",
             command=["python", "/workspace/code.py"],  # note o path no container
             volumes={tmpdir: {"bind": "/workspace", "mode": "rw"}},
             detach=False,
             auto_remove=True
         )
+    
+
    
         # Agora você pode executar comandos dentro do container
         #exit_code, output = container.exec_run("ls -l /workspace")
