@@ -36,20 +36,32 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
             print("dentro de f:")
             print(f.read(100))
         print("Arquivos em tmpdir:", os.listdir(tmpdir))
-        for f in os.listdir(tmpdir):
-            print(f)
+
+
+        for filename in os.listdir(tmpdir):
+            file_path = os.path.join(tmpdir, filename)
+    
+            # verifica se é um arquivo regular (não diretório)
+            if os.path.isfile(file_path):
+                with open(file_path, "r", encoding="utf-8", errors="ignore") as f:
+                    content = f.read(100)  # lê os primeiros 100 caracteres
+                print(f"Arquivo: {filename}")
+                print(f"Conteúdo (100 primeiros caracteres):\n{content}")
+                print("-" * 40)
+        
         container_file_path = f"/workspace/{file_name}"
         print("container_file_path")
         print(container_file_path)
         
         try:
             # Cria o container (não auto_remove)
+
             container = client.containers.run(
                 "python:3.11-slim",
-                command="sleep 60",  # mantém o container vivo por 60s
+                command=["python", "/workspace/code.py"],  # note o path no container
                 volumes={tmpdir: {"bind": "/workspace", "mode": "rw"}},
                 detach=True,
-                auto_remove=False
+                auto_remove=True
             )
             
             # Agora você pode executar comandos dentro do container
