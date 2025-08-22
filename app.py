@@ -16,28 +16,28 @@ client = docker.from_env()
 async def execute(code: UploadFile = File(...), lang: str = Form(...)):
     contents = await code.read()
 
-    # gera um nome temporário de arquivo único
-    file_id = str(uuid.uuid4())
-    file_path = f"/tmp/{file_id}.py"
+    # diretório dedicado
+    base_dir = "/tmp/docker_exec"
+    os.makedirs(base_dir, exist_ok=True)
 
-    # grava o código em um arquivo temporário
+    # gera um nome único para o arquivo
+    file_id = str(uuid.uuid4())
+    file_path = os.path.join(base_dir, f"{file_id}.py")
+
+    # salva o código no diretório dedicado
     with open(file_path, "wb") as f:
         f.write(contents)
 
     try:
-        # executa container e monta o arquivo
         container = client.containers.run(
             "python:3.11-slim",
-            command=["python", f"/tmp/{file_id}.py"],
-            volumes={"/tmp": {"bind": "/tmp", "mode": "rw"}},
+            command=["python", f"/code/{file_id}.py"],  # dentro do container
+            volumes={base_dir: {"bind": "/code", "mode": "rw"}},  # monta na pasta /code
             detach=True
         )
 
-        # espera o container terminar
         exit_code = container.wait()
         logs = container.logs().decode("utf-8")
-
-        # remove container depois
         container.remove()
 
         return JSONResponse({
@@ -50,10 +50,7 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
         return JSONResponse({"status": "error", "message": str(e)})
 
     finally:
-        # apaga o arquivo temporário
         try:
-            import os
             os.remove(file_path)
         except OSError:
             pass
-            
