@@ -33,7 +33,7 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
                 auto_remove=True
             )
             container.wait()
-            with open(os.path.join(tmpdir, "output.txt"), "r") as f:
+            with open(os.path.join(tmpdir2, "output.txt"), "r") as f:
                 stdout = f.read()
 
             #result = container.wait(timeout=10)
