@@ -21,17 +21,20 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
             os.makedirs(tmpdir2, exist_ok=True)
             os.chmod(tmpdir2, 0o777)
 
-            file_path = os.path.join(tmpdir2, 'code.py')
-            with open(file_path, 'wb') as f:
+            file_path = os.path.join(tmpdir, "code.py")
+            with open(file_path, "wb") as f:
                 f.write(contents)
+
 
             container = client.containers.run(
                 "python:3.11",
-                command=f"python /tmp/{os.path.basename(file_path)} > /tmp/output.txt 2>&1",
-                volumes={tmpdir2: {"bind": "/tmp", "mode": "rw"}},
+                command="python /tmp/code.py",  # nome fixo
+                volumes={tmpdir: {"bind": "/tmp", "mode": "rw"}}, 
+                working_dir="/tmp",             # força o diretório de trabalho
                 detach=True,
-                auto_remove=True
+                auto_remove=False
             )
+
             container.wait()
             with open(os.path.join(tmpdir2, "output.txt"), "r") as f:
                 stdout = f.read()
