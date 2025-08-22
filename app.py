@@ -17,9 +17,6 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
 
     with tempfile.TemporaryDirectory() as tmpdir:
         if lang == 'Python':
-            tmpdir2 = "/tmp/docker_exec"
-            os.makedirs(tmpdir2, exist_ok=True)
-            os.chmod(tmpdir2, 0o777)
 
             file_path = os.path.join(tmpdir, "code.py")
             with open(file_path, "wb") as f:
@@ -28,21 +25,18 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
 
             container = client.containers.run(
                 "python:3.11",
-                command="python /tmp/code.py",  # nome fixo
-                volumes={tmpdir: {"bind": "/tmp", "mode": "rw"}}, 
-                working_dir="/tmp",             # força o diretório de trabalho
+                command="python /tmp/code.py",
+                volumes={tmpdir: {"bind": "/tmp", "mode": "rw"}},
+                working_dir="/tmp",
                 detach=True,
                 auto_remove=False
             )
-
-            container.wait()
-            with open(os.path.join(tmpdir2, "output.txt"), "r") as f:
-                stdout = f.read()
-
-            #result = container.wait(timeout=10)
-            #logs = container.logs()  # agora funciona
-           # container.remove()
-            #stdout = logs.decode()
+            
+            result = container.wait()
+            logs = container.logs().decode()
+            container.remove()
+            
+            stdout = logs
             
         elif lang == 'Java':
             jar_path = os.path.join(os.path.dirname(__file__), 'javasim-2.3.jar')
