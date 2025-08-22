@@ -63,7 +63,7 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
             "python:3.11-slim",
             command=["python", "-c", "print(1234567890)"],  # note o path no container
             volumes={tmpdir: {"bind": "/workspace", "mode": "rw"}},
-            detach=True,
+            detach=False,
             auto_remove=False
         )
    
@@ -77,9 +77,9 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
         #container.exec_run("python /workspace/code.py")
 
         # Depois finalize o container
-        logs = container.logs().decode("utf-8")
-        container.stop()
-        container.remove()
+        logs = container.decode("utf-8")
+        #container.stop()
+        #container.remove()
 
         
         return {
