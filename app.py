@@ -1,61 +1,55 @@
+import docker
+import uuid
+import os
 from fastapi import FastAPI, UploadFile, File, Form
 from fastapi.responses import JSONResponse
-import docker
-import tempfile
-import os
-import uuid
 import tempfile
 
 app = FastAPI()
-client = docker.from_env()  # Conecta ao Docker no host
+client = docker.from_env()
 
 @app.post("/execute")
-async def execute(code: UploadFile = File(...)):
-    # Cria um ID único para o arquivo
-    file_id = str(uuid.uuid4())
+async def execute(code: UploadFile = File(...), lang: str = Form(...)):
+    if lang.lower() != "python":
+        return JSONResponse({"status": "error", "message": "Only Python is supported."})
     
-    # Cria um diretório temporário isolado
-    with tempfile.TemporaryDirectory(prefix=f"docker_exec_{file_id}_") as tmpdir:
-        # Caminho do arquivo Python no host
-        tmpdir = tempfile.mkdtemp()  # exemplo: /tmp/tmpabcd1234
-        file_path = os.path.join(tmpdir, "code.py")
-        host_file_path = os.path.join(tmpdir, "code.py")
-        # Salva o conteúdo do upload no host
-        contents = await code.read()
-        with open(file_path, "wb") as f:
+    contents = await code.read()
+    
+    with tempfile.TemporaryDirectory() as tmpdir:
+        # Gera nome único para o arquivo
+        file_name = f"{uuid.uuid4().hex}.py"
+        host_file_path = os.path.join(tmpdir, file_name)
+        
+        # Grava o código do cliente
+        with open(host_file_path, "wb") as f:
             f.write(contents)
-
+        
+        container_file_path = f"/workspace/{file_name}"
         
         try:
-            # Executa o container Python montando o arquivo
+            # Cria o container (não auto_remove)
             container = client.containers.run(
                 "python:3.11-slim",
-                command="python /workspace/code.py",
+                command=["python", container_file_path],
                 volumes={tmpdir: {"bind": "/workspace", "mode": "rw"}},
                 detach=True,
-                remove=False
+                auto_remove=False
             )
-
-
             
             # Espera terminar
-            exit_code = container.wait()
+            exit_status = container.wait()
             
-            # Lê os logs
-            logs = container.logs().decode("utf-8")
+            # Captura logs
+            logs = container.logs(stdout=True, stderr=True).decode("utf-8")
             
-            # Remove manualmente
+            # Remove o container manualmente
             container.remove()
-
-
+            
             return JSONResponse({
                 "status": "finished",
-                "exit_code": exit_code.get("StatusCode", -1),
+                "exit_code": exit_status.get("StatusCode", -1),
                 "output": logs
             })
-
+        
         except Exception as e:
-            return JSONResponse({
-                "status": "error",
-                "message": str(e)
-            })
+            return JSONResponse({"status": "error", "message": str(e)})
