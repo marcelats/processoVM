@@ -18,11 +18,12 @@ async def run_code(request: Request):
 
     # cria container com bind mount do arquivo
     container = client.containers.run(
-        "python:3.9",
-        command=["python", "/tmp/code.py"],
+        image="python:3.9-slim",
+        command=["python", "/tmp/code.py"],   # importante usar caminho absoluto dentro do container
         volumes={file_path: {"bind": "/tmp/code.py", "mode": "ro"}},
-        detach=True,
+        detach=True
     )
+
 
     result = container.wait()  # espera terminar
     logs = container.logs().decode("utf-8")  # pega saída
