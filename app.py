@@ -28,15 +28,21 @@ async def execute(code: UploadFile = File(...)):
             container = client.containers.run(
                 "python:3.11-slim",
                 command="python /tmp/code.py",
-                volumes={tmpdir: {"bind": "/tmp", "mode": "rw"}},  # monta tmpdir no container
+                volumes={tmpdir: {"bind": "/tmp", "mode": "rw"}},
                 working_dir="/tmp",
                 detach=True,
-                auto_remove=True
+                auto_remove=False  # Mantém o container até remover manualmente
             )
-
-            # Espera o container terminar
+            
+            # Espera terminar
             exit_code = container.wait()
+            
+            # Lê os logs
             logs = container.logs().decode("utf-8")
+            
+            # Remove manualmente
+            container.remove()
+
 
             return JSONResponse({
                 "status": "finished",
