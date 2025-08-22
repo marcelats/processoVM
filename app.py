@@ -18,6 +18,7 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
     print(contents[:100])
     with tempfile.TemporaryDirectory() as tmpdir:
         # Gera nome único para o arquivo
+        os.chmod(tmpdir, 0o777)
         print("tmpdir:")
         print(tmpdir)
         file_name = f"{uuid.uuid4().hex}.py"
