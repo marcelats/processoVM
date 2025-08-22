@@ -48,7 +48,14 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
                 detach=True,
                 auto_remove=False
             )
+
+            exit_code, output = container.exec_run("ls -l /workspace")
+            print(output.decode())
             
+            # ler o conteúdo do arquivo
+            exit_code, output = container.exec_run(f"cat {container_file_path}")
+            print(output.decode())
+                        
             # Espera terminar
             exit_status = container.wait()
             
