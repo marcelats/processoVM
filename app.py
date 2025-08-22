@@ -12,17 +12,20 @@ async def run_code(request: Request):
     code = body.get("code", "")
 
     # caminho local temporário
-    file_path = "/tmp/code.py"
-    with open(file_path, "w") as f:
-        f.write(code)
+    file_path = f"/tmp/{file_id}.py"
+    with open(file_path, "wb") as f:
+        f.write(contents)
+
 
     # cria container com bind mount do arquivo
     container = client.containers.run(
-        image="python:3.9-slim",
-        command=["python", "/tmp/code.py"],   # importante usar caminho absoluto dentro do container
-        volumes={file_path: {"bind": "/tmp/code.py", "mode": "ro"}},
+        "python:3.11-slim",
+        command=f"python /tmp/{file_id}.py",
+        volumes={ "/tmp": {"bind": "/tmp", "mode": "rw"} },  # monta /tmp do host no /tmp do container
+        working_dir="/tmp",  # define diretório de trabalho
         detach=True
     )
+
 
 
     result = container.wait()  # espera terminar
