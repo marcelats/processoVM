@@ -1,56 +1,35 @@
-import docker
-import uuid
-from fastapi import FastAPI, Request, UploadFile, File, Form
+from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
-import zipfile
-import subprocess
-import tempfile
+import docker
 import os
-import glob
-import logging
 
 app = FastAPI()
 client = docker.from_env()
 
-@app.post("/execute")
-async def execute(code: UploadFile = File(...), lang: str = Form(...)):
-    contents = await code.read()
+@app.post("/run")
+async def run_code(request: Request):
+    body = await request.json()
+    code = body.get("code", "")
 
-    # diretório dedicado
-    base_dir = "/tmp/docker_exec"
-    os.makedirs(base_dir, exist_ok=True)
+    # caminho local temporário
+    file_path = "/tmp/code.py"
+    with open(file_path, "w") as f:
+        f.write(code)
 
-    # gera um nome único para o arquivo
-    file_id = str(uuid.uuid4())
-    file_path = os.path.join(base_dir, f"{file_id}.py")
+    # cria container com bind mount do arquivo
+    container = client.containers.run(
+        "python:3.9",
+        command=["python", "/tmp/code.py"],
+        volumes={file_path: {"bind": "/tmp/code.py", "mode": "ro"}},
+        detach=True,
+    )
 
-    # salva o código no diretório dedicado
-    with open(file_path, "wb") as f:
-        f.write(contents)
+    result = container.wait()  # espera terminar
+    logs = container.logs().decode("utf-8")  # pega saída
+    container.remove()  # limpa
 
-    try:
-        container = client.containers.run(
-            "python:3.11-slim",
-            command=["python", f"/code/{file_id}.py"],  # dentro do container
-            volumes={base_dir: {"bind": "/code", "mode": "rw"}},  # monta na pasta /code
-            detach=True
-        )
-
-        exit_code = container.wait()
-        logs = container.logs().decode("utf-8")
-        container.remove()
-
-        return JSONResponse({
-            "status": "finished",
-            "exit_code": exit_code["StatusCode"],
-            "output": logs
-        })
-
-    except Exception as e:
-        return JSONResponse({"status": "error", "message": str(e)})
-
-    finally:
-        try:
-            os.remove(file_path)
-        except OSError:
-            pass
+    return JSONResponse({
+        "status": "finished",
+        "returncode": result.get("StatusCode"),
+        "output": logs
+    })
