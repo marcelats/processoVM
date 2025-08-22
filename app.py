@@ -26,10 +26,9 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
     file_name = f"{uuid.uuid4().hex}.py"
     print("file_name:")
     print(file_name)
-    host_file_path = os.path.join(tmpdir, "code.py")
+    host_file_path = os.path.join(tmpdir, file_name)
     print("host_file_path:")
     print(host_file_path)
-    host_file_path = os.path.join(tmpdir, "code.py")  
     # Grava o código do cliente
     with open(host_file_path, "wb") as f:
         f.write(contents)
@@ -61,7 +60,7 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
 
         container = client.containers.run(
             "python-simpy",
-            command=["python", "/workspace/code.py"],  # note o path no container
+            command=["python", container_file_path],  # note o path no container
             volumes={tmpdir: {"bind": "/workspace", "mode": "rw"}},
             detach=False,
             auto_remove=True
