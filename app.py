@@ -55,7 +55,7 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
     try:
         # Cria o container (não auto_remove)]
         language = ""
-        if lang.lower == "python":
+        if lang.lower() == "python":
             language = "python"
         else:
             language = "Rscript"
