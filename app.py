@@ -68,11 +68,11 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
         )
    
         # Agora você pode executar comandos dentro do container
-        exit_code, output = container.exec_run("ls -l /workspace")
-        print(output.decode())
+        #exit_code, output = container.exec_run("ls -l /workspace")
+        #print(output.decode())
 
-        exit_code, output = container.exec_run(f"cat {container_file_path}")
-        print(output.decode())
+        #exit_code, output = container.exec_run(f"cat {container_file_path}")
+        #print(output.decode())
 
         # Depois finalize o container
         logs = container.logs().decode("utf-8")
