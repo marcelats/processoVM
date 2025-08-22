@@ -10,9 +10,6 @@ client = docker.from_env()
 
 @app.post("/execute")
 async def execute(code: UploadFile = File(...), lang: str = Form(...)):
-    if lang.lower() != "python":
-        return JSONResponse({"status": "error", "message": "Only Python is supported."})
-    
     contents = await code.read()
     print("contents:")
     print(contents[:100])
@@ -56,16 +53,20 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
     print(container_file_path)
     
     try:
-        # Cria o container (não auto_remove)
-
+        # Cria o container (não auto_remove)]
+        language = ""
+        if lang.lower == "python":
+            language = "python"
+        else:
+            language = "Rscript"
+            
         container = client.containers.run(
             "python-simpy",
-            command=["python", container_file_path],  # note o path no container
+            command=[language, container_file_path],  # note o path no container
             volumes={tmpdir: {"bind": "/workspace", "mode": "rw"}},
             detach=False,
             auto_remove=True
         )
-    
 
    
         # Agora você pode executar comandos dentro do container
