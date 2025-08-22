@@ -1,5 +1,7 @@
-from fastapi import FastAPI, Request, UploadFile, File, Form
 import docker
+import uuid
+from fastapi import FastAPI, Request
+from fastapi.responses import JSONResponse
 import zipfile
 import subprocess
 import tempfile
@@ -12,112 +14,46 @@ client = docker.from_env()
 
 @app.post("/execute")
 async def execute(code: UploadFile = File(...), lang: str = Form(...)):
-    logging.basicConfig(level=logging.INFO)
     contents = await code.read()
 
-    with tempfile.TemporaryDirectory() as tmpdir:
-        if lang == 'Python':
+    # gera um nome temporário de arquivo único
+    file_id = str(uuid.uuid4())
+    file_path = f"/tmp/{file_id}.py"
 
-            file_path = os.path.join(tmpdir, "code.py")
-            with open(file_path, "wb") as f:
-                f.write(contents)
+    # grava o código em um arquivo temporário
+    with open(file_path, "w") as f:
+        f.write(contents)
 
+    try:
+        # executa container e monta o arquivo
+        container = client.containers.run(
+            "python:3.11-slim",
+            command=["python", f"/tmp/{file_id}.py"],
+            volumes={"/tmp": {"bind": "/tmp", "mode": "rw"}},
+            detach=True
+        )
 
-            container = client.containers.run(
-                "python:3.11",
-                command="python /tmp/code.py",
-                volumes={tmpdir: {"bind": "/tmp", "mode": "rw"}},
-                working_dir="/tmp",
-                detach=True,
-                auto_remove=False
-            )
-            
-            result = container.wait()
-            logs = container.logs().decode()
-            container.remove()
-            
-            stdout = logs
-            
-        elif lang == 'Java':
-            jar_path = os.path.join(os.path.dirname(__file__), 'javasim-2.3.jar')
-            if not os.path.exists(jar_path):
-                raise FileNotFoundError(f"Arquivo .jar não encontrado: {jar_path}")
-            else:
-                logging.info(f"JAR localizado: {jar_path}")
+        # espera o container terminar
+        exit_code = container.wait()
+        logs = container.logs().decode("utf-8")
 
-            zip_path = os.path.join(tmpdir, 'codigo.zip')
-            contents.save(zip_path)
-            with zipfile.ZipFile(zip_path, 'r') as zip_ref:
-                zip_ref.extractall(tmpdir)
-            java_files = glob.glob(os.path.join(tmpdir, "*.java"))    
-            if not java_files:
-                logging.error("Nenhum arquivo .java encontrado!")
-            else:
-                logging.info("Compilando arquivos: %s", java_files)
+        # remove container depois
+        container.remove()
 
-                compile_cmd = ['javac', '-cp', jar_path] + java_files
-                compile_proc = subprocess.run(compile_cmd, capture_output=True, text=True)
-
-                if compile_proc.returncode != 0:
-                    logging.error("Erro na compilação:")
-                    logging.error("STDERR:\n%s", compile_proc.stderr.strip())
-                    logging.error("STDOUT:\n%s", compile_proc.stdout.strip())
-                else:
-                    logging.info("Compilação bem-sucedida!")
-
-        # Executar a Main
-                    run_cmd = ['java', '-cp', f'{tmpdir}:{jar_path}', 'Main']
-                    proc = subprocess.run(run_cmd, capture_output=True, text=True)
-
-                    logging.info("Saída da execução:")
-                    logging.info("STDOUT:\n%s", proc.stdout.strip())
-                    logging.info("STDERR:\n%s", proc.stderr.strip())
-                    
-        elif lang == 'C SMPL':
-            file_path = os.path.join(tmpdir, 'code.c')
-            with open(file_path, 'wb') as f:
-                f.write(contents)
-
-            # Ajuste para onde está instalada sua biblioteca SMPL
-            smpl_include_path = '/usr/local/include'  # Ou onde estiver o smpl.h
-            smpl_lib_path = '/usr/local/lib'          # Ou onde estiver libsmpl.a/.so
-
-            output_binary = os.path.join(tmpdir, 'code_exec')
-
-            compile_cmd = [
-                'gcc',
-                file_path,
-                '-I', smpl_include_path,
-                '-L', smpl_lib_path,
-                '-lsmpl',
-                '-o', output_binary
-            ]
-
-            compile_proc = subprocess.run(compile_cmd, capture_output=True, text=True)
-
-            if compile_proc.returncode != 0:
-                logging.error("Erro na compilação C SMPL:")
-                logging.error("STDERR:\n%s", compile_proc.stderr.strip())
-                logging.error("STDOUT:\n%s", compile_proc.stdout.strip())
-                return jsonify({
-                    'stdout': compile_proc.stdout,
-                    'stderr': compile_proc.stderr,
-                    'returncode': compile_proc.returncode
-                })
-
-            # Executar o binário
-            proc = subprocess.run([output_binary], capture_output=True, text=True, timeout=10)
-        
-        else:
-            file_path = os.path.join(tmpdir, 'code.R')
-            with open(file_path, 'wb') as f:
-                f.write(contents)
-            cmd = ['Rscript', file_path]
-
-            proc = subprocess.run(cmd, capture_output=True, text=True, timeout=10)
-
-        return {
+        return JSONResponse({
             "status": "finished",
-            "returncode": result.get("StatusCode", -1),
-            "output": stdout
-        }
+            "exit_code": exit_code["StatusCode"],
+            "output": logs
+        })
+
+    except Exception as e:
+        return JSONResponse({"status": "error", "message": str(e)})
+
+    finally:
+        # apaga o arquivo temporário
+        try:
+            import os
+            os.remove(file_path)
+        except OSError:
+            pass
+            
