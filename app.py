@@ -18,13 +18,21 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
     with tempfile.TemporaryDirectory() as tmpdir:
         # Gera nome único para o arquivo
         file_name = f"{uuid.uuid4().hex}.py"
+        print("file_name")
+        print(file_name)
         host_file_path = os.path.join(tmpdir, file_name)
+        print("host_file_path")
+        print(host_file_path)
         
         # Grava o código do cliente
         with open(host_file_path, "wb") as f:
             f.write(contents)
+            print("f")
+            print(f)
         
         container_file_path = f"/workspace/{file_name}"
+        print("container_file_path")
+        print(container_file_path)
         
         try:
             # Cria o container (não auto_remove)
