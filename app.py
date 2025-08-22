@@ -20,9 +20,6 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
         # Gera nome único para o arquivo
         print("tmpdir:")
         print(tmpdir)
-        print("Arquivos em tmpdir:", os.listdir(tmpdir))
-        for f in os.listdir(tmpdir):
-            print(f)
         file_name = f"{uuid.uuid4().hex}.py"
         print("file_name:")
         print(file_name)
@@ -38,6 +35,9 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
         with open(host_file_path, "rb") as f:
             print("dentro de f:")
             print(f.read(100))
+        print("Arquivos em tmpdir:", os.listdir(tmpdir))
+        for f in os.listdir(tmpdir):
+            print(f)
         container_file_path = f"/workspace/{file_name}"
         print("container_file_path")
         print(container_file_path)
