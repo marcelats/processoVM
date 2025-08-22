@@ -43,27 +43,23 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
             # Cria o container (não auto_remove)
             container = client.containers.run(
                 "python:3.11-slim",
-                command=["python", container_file_path],
+                command="sleep 60",  # mantém o container vivo por 60s
                 volumes={tmpdir: {"bind": "/workspace", "mode": "rw"}},
                 detach=True,
                 auto_remove=False
             )
-
+            
+            # Agora você pode executar comandos dentro do container
             exit_code, output = container.exec_run("ls -l /workspace")
             print(output.decode())
             
-            # ler o conteúdo do arquivo
             exit_code, output = container.exec_run(f"cat {container_file_path}")
             print(output.decode())
-                        
-            # Espera terminar
-            exit_status = container.wait()
             
-            # Captura logs
-            logs = container.logs(stdout=True, stderr=True).decode("utf-8")
-            
-            # Remove o container manualmente
+            # Depois finalize o container
+            container.stop()
             container.remove()
+
             
             return JSONResponse({
                 "status": "finished",
