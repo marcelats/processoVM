@@ -71,7 +71,7 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
         exit_code, output = container.exec_run("ls -l /workspace")
         print(output.decode())
 
-        exit_code, output = container.exec_run(f"cat code.py")
+        exit_code, output = container.exec_run(f"cat workspace/code.py")
         print(output.decode())
 
         container.exec_run("python /workspace/code.py")
