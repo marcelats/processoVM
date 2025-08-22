@@ -18,7 +18,7 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
     print(contents[:100])
 #with tempfile.TemporaryDirectory() as tmpdir:
     # Gera nome único para o arquivo
-    tmpdir = "/tmp/docker_exec"
+    tmpdir = "/home/ubuntu/docker_exec"
     os.makedirs(tmpdir, exist_ok=True)
     os.chmod(tmpdir, 0o777)
     print("tmpdir:")
@@ -26,7 +26,7 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
     file_name = f"{uuid.uuid4().hex}.py"
     print("file_name:")
     print(file_name)
-    host_file_path = os.path.join(tmpdir, file_name)
+    host_file_path = os.path.join(tmpdir, "code.py")
     print("host_file_path:")
     print(host_file_path)
     host_file_path = os.path.join(tmpdir, "code.py")  
