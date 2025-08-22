@@ -14,24 +14,27 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
         return JSONResponse({"status": "error", "message": "Only Python is supported."})
     
     contents = await code.read()
-    
+    print("contents:")
+    print(contents[:100])
     with tempfile.TemporaryDirectory() as tmpdir:
         # Gera nome único para o arquivo
-        print("tmpdir")
+        print("tmpdir:")
         print(tmpdir)
         file_name = f"{uuid.uuid4().hex}.py"
-        print("file_name")
+        print("file_name:")
         print(file_name)
         host_file_path = os.path.join(tmpdir, file_name)
-        print("host_file_path")
+        print("host_file_path:")
         print(host_file_path)
         
         # Grava o código do cliente
         with open(host_file_path, "wb") as f:
             f.write(contents)
-            print("f")
+            print("f:")
             print(f)
-        
+        with open(host_file_path, "rb") as f:
+            print("dentro de f:")
+            print(f.read(100))
         container_file_path = f"/workspace/{file_name}"
         print("container_file_path")
         print(container_file_path)
