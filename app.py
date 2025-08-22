@@ -28,7 +28,7 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
             container = client.containers.run(
                 "python:3.11",
                 command=f"python /tmp/{os.path.basename(file_path)} > /tmp/docker_exec/output.txt 2>&1",
-                volumes={tmpdir: {"bind": "/tmp", "mode": "rw"}},
+                volumes={tmpdir2: {"bind": "/tmp", "mode": "rw"}},
                 detach=True,
                 auto_remove=True
             )
