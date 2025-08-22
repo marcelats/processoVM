@@ -61,7 +61,7 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
 
         container = client.containers.run(
             "python:3.11-slim",
-            command="print(1234567890)",  # note o path no container
+            command=["python", "-c", "print(1234567890)"],  # note o path no container
             volumes={tmpdir: {"bind": "/workspace", "mode": "rw"}},
             detach=True,
             auto_remove=False
