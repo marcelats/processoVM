@@ -30,7 +30,7 @@ async def execute(code: UploadFile = File(...)):
                 command="python /workspace/code.py",
                 volumes={tmpdir: {"bind": "/workspace", "mode": "rw"}},
                 detach=True,
-                remove=True,
+                remove=False,
             )
 
             
