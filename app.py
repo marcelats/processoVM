@@ -4,6 +4,7 @@ import docker
 import tempfile
 import os
 import uuid
+import tempfile
 
 app = FastAPI()
 client = docker.from_env()  # Conecta ao Docker no host
@@ -16,12 +17,14 @@ async def execute(code: UploadFile = File(...)):
     # Cria um diretório temporário isolado
     with tempfile.TemporaryDirectory(prefix=f"docker_exec_{file_id}_") as tmpdir:
         # Caminho do arquivo Python no host
-        host_file_path = os.path.join(tmpdir, "code.py")
+        tmpdir = tempfile.mkdtemp()  # exemplo: /tmp/tmpabcd1234
         file_path = os.path.join(tmpdir, "code.py")
+        host_file_path = os.path.join(tmpdir, "code.py")
         # Salva o conteúdo do upload no host
         contents = await code.read()
-        with open(host_file_path, "wb") as f:
+        with open(file_path, "wb") as f:
             f.write(contents)
+
         
         try:
             # Executa o container Python montando o arquivo
@@ -30,8 +33,9 @@ async def execute(code: UploadFile = File(...)):
                 command="python /workspace/code.py",
                 volumes={tmpdir: {"bind": "/workspace", "mode": "rw"}},
                 detach=True,
-                remove=False,
+                remove=False
             )
+
 
             
             # Espera terminar
