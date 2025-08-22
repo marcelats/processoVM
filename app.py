@@ -21,7 +21,7 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
     file_path = f"/tmp/{file_id}.py"
 
     # grava o código em um arquivo temporário
-    with open(file_path, "w") as f:
+    with open(file_path, "wb") as f:
         f.write(contents)
 
     try:
