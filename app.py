@@ -61,7 +61,7 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
                 command=["python", "/workspace/code.py"],  # note o path no container
                 volumes={tmpdir: {"bind": "/workspace", "mode": "rw"}},
                 detach=True,
-                auto_remove=True
+                auto_remove=False
             )
             
             # Agora você pode executar comandos dentro do container
