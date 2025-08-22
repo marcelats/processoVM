@@ -60,6 +60,8 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
             print(output.decode())
             
             # Depois finalize o container
+            logs = container.logs()
+            print(logs.decode())
             container.stop()
             container.remove()
 
