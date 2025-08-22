@@ -93,5 +93,4 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
         "output": logs
     }
     
-    except Exception as e:
-        return JSONResponse({"status": "error", "message": str(e)})
+
