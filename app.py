@@ -66,10 +66,10 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
             container.remove()
 
             
-            return JSONResponse({
+            return {
                 "status": "finished",
                 "output": logs
-            })
+            }
         
         except Exception as e:
             return JSONResponse({"status": "error", "message": str(e)})
