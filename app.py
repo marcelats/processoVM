@@ -17,7 +17,7 @@ async def execute(code: UploadFile = File(...)):
     with tempfile.TemporaryDirectory(prefix=f"docker_exec_{file_id}_") as tmpdir:
         # Caminho do arquivo Python no host
         host_file_path = os.path.join(tmpdir, "code.py")
-        
+        file_path = os.path.join(tmpdir, "code.py")
         # Salva o conteúdo do upload no host
         contents = await code.read()
         with open(host_file_path, "wb") as f:
@@ -27,12 +27,12 @@ async def execute(code: UploadFile = File(...)):
             # Executa o container Python montando o arquivo
             container = client.containers.run(
                 "python:3.11-slim",
-                command="python /tmp/code.py",
-                volumes={tmpdir: {"bind": "/tmp", "mode": "rw"}},
-                working_dir="/tmp",
+                command="python /workspace/code.py",
+                volumes={tmpdir: {"bind": "/workspace", "mode": "rw"}},
                 detach=True,
-                auto_remove=False  # Mantém o container até remover manualmente
+                remove=True,
             )
+
             
             # Espera terminar
             exit_code = container.wait()
