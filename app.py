@@ -71,10 +71,14 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
                 volumes={project_path: {"bind": "/workspace", "mode": "rw"}},
                 working_dir="/workspace",
                 detach=False,
-                auto_remove=True
+                auto_remove=False
             )
 
-            print(container.decode("utf-8"))
+            exit_code = container.wait()
+            logs = container.logs(stdout=True, stderr=True)
+            print("Exit code:", exit_code)
+            print(logs.decode("utf-8"))
+            container.remove()
     
             # Depois, roda a classe principal
             run_cmd = ["java", "-cp", jar_path, "com.javasim.teste.basic.Main"]
