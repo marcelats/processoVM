@@ -26,7 +26,7 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
         zip_path = os.path.join(project_path, code.filename)
         with open(zip_path, "wb") as f:
             #f.write(await code.read())
-            shutil.copyfileobj(code.file, buffer)
+            shutil.copyfileobj(code.file, f)
     
         # Descompacta o zip
         with zipfile.ZipFile(zip_path, "r") as zip_ref:
