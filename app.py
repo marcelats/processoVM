@@ -56,21 +56,19 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
                         container_path = os.path.join("/workspace", os.path.relpath(os.path.join(root, file), project_path))
                         java_files.append(container_path)
 
-
-            
-            # Comando javac
             compile_cmd = [
                 "javac",
-                "-cp", jar_path,
-                "-d", output_path
+                "-cp", "/workspace/javasim-2.3.jar",
+                "-d", "/workspace/out"
             ] + java_files
+
+            shutil.copy(jar_path, project_path)
             
             container = client.containers.run(
                 "java-17-slim",           # Nome da imagem que você construiu
                 command=compile_cmd,
                 volumes = {
                     project_path: {"bind": "/workspace", "mode": "rw"},
-                    os.path.dirname(jar_path): {"bind": "/workspace", "mode": "ro"}  # monta o jar
                 },
                 working_dir="/workspace",
                 detach=False,
@@ -84,7 +82,12 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
             container.remove()
     
             # Depois, roda a classe principal
-            run_cmd = ["java", "-cp", jar_path, "com.javasim.teste.basic.Main"]
+
+            run_cmd = [
+                "java",
+                "-cp", "/workspace/out:/workspace/javasim-2.3.jar",
+                "com.javasim.teste.basic.Main"
+            ]
 
             output = client.containers.run(
                 "java-17-slim",
