@@ -38,40 +38,40 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
             zip_ref.extractall(project_path)
     
         # Apaga o zip
-        #os.remove(zip_path)
+        os.remove(zip_path)
     
-        #try:
+        try:
             # Comando para compilar todos os arquivos .java
-            #compile_cmd = ["javac"] + [os.path.join(project_path, f) 
-            #                           for f in os.listdir(project_path) if f.endswith(".java")]
+            compile_cmd = ["javac"] + [os.path.join(project_path, f) 
+                                       for f in os.listdir(project_path) if f.endswith(".java")]
     
-            # Executa o container Java
-            #container = client.containers.run(
-            #    "java-17-slim",           # Nome da imagem que você construiu
-            #    command=compile_cmd,
-            #    volumes={project_path: {"bind": "/workspace", "mode": "rw"}},
-            #    working_dir="/workspace",
-            #    detach=False,
-            #    auto_remove=True
-            #)
+            
+            container = client.containers.run(
+                "java-17-slim",           # Nome da imagem que você construiu
+                command=compile_cmd,
+                volumes={project_path: {"bind": "/workspace", "mode": "rw"}},
+                working_dir="/workspace",
+                detach=False,
+                auto_remove=True
+            )
     
             # Depois, roda a classe principal
-            #main_class = "Main"  # ou determine a partir do usuário/manifest
-            #run_cmd = ["java", main_class]
-            #output = client.containers.run(
-            #    "java-17-slim",
-            #    command=run_cmd,
-            #    volumes={project_path: {"bind": "/workspace", "mode": "rw"}},
-            #    working_dir="/workspace",
-            #    detach=False,
-            #    auto_remove=True
-            #)
+            main_class = "Main"  # ou determine a partir do usuário/manifest
+            run_cmd = ["java", main_class]
+            output = client.containers.run(
+                "java-17-slim",
+                command=run_cmd,
+                volumes={project_path: {"bind": "/workspace", "mode": "rw"}},
+                working_dir="/workspace",
+                detach=False,
+                auto_remove=True
+            )
     
-            #return {"status": "finished", "output": output.decode("utf-8")}
-        #finally:
+            return {"status": "finished", "output": output.decode("utf-8")}
+        finally:
             # Limpeza
             #import shutil
-            #shutil.rmtree(project_path)
+            shutil.rmtree(project_path)
     else:
 #with tempfile.TemporaryDirectory() as tmpdir:
     # Gera nome único para o arquivo
