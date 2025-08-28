@@ -73,6 +73,8 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
                 detach=False,
                 auto_remove=True
             )
+
+            print(container.decode("utf-8"))
     
             # Depois, roda a classe principal
             run_cmd = ["java", "-cp", jar_path, "com.javasim.teste.basic.Main"]
