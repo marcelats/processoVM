@@ -145,9 +145,9 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
                 print(f"Arquivo {host_file_path} removido.")
     
         
-    return {
-        "status": "finished",
-        "output": logs
-    }
+    #return {
+    #    "status": "finished",
+    #    "output": logs
+    #}
     
 
