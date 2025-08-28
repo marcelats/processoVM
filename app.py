@@ -22,7 +22,7 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
         os.makedirs(project_path, exist_ok=True)
     
         # Salva o zip
-        zip_path = os.path.join(project_path, file.filename)
+        zip_path = os.path.join(project_path, code.filename)
         with open(zip_path, "wb") as f:
             f.write(await file.read())
     
