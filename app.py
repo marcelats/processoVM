@@ -19,7 +19,11 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
         project_id = uuid.uuid4().hex
         project_path = os.path.join(TMPDIR, project_id)
         os.makedirs(project_path, exist_ok=True)
-    
+        jar_path = os.path.join(os.path.dirname(__file__), 'javasim-2.3.jar')
+        if not os.path.exists(jar_path):
+            raise FileNotFoundError(f"Arquivo .jar não encontrado: {jar_path}")
+        else:
+            logging.info(f"JAR localizado: {jar_path}")
         # Salva o zip
         zip_path = os.path.join(project_path, code.filename)
         with open(zip_path, "wb") as f:
@@ -40,9 +44,10 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
     
         try:
             # Comando para compilar todos os arquivos .java
-            compile_cmd = ["javac"] + [os.path.join(project_path, f) 
-                                       for f in os.listdir(project_path) if f.endswith(".java")]
-    
+            compile_cmd = [
+                "javac",
+                "-cp", jar_path,
+            ] + [os.path.join(project_path, f) for f in os.listdir(project_path) if f.endswith(".java")]
             
             container = client.containers.run(
                 "java-17-slim",           # Nome da imagem que você construiu
@@ -54,8 +59,8 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
             )
     
             # Depois, roda a classe principal
-            main_class = "Main"  # ou determine a partir do usuário/manifest
-            run_cmd = ["java", main_class]
+            run_cmd = ["java", "-cp", jar_path, "Main"]
+
             output = client.containers.run(
                 "java-17-slim",
                 command=run_cmd,
