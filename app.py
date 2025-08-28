@@ -27,8 +27,8 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
             f.write(await code.read())
     
         # Descompacta o zip
-        #with zipfile.ZipFile(zip_path, "r") as zip_ref:
-        #    zip_ref.extractall(project_path)
+        with zipfile.ZipFile(zip_path, "r") as zip_ref:
+            zip_ref.extractall(project_path)
     
         # Apaga o zip
         #os.remove(zip_path)
