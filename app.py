@@ -72,14 +72,14 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
                 },
                 working_dir="/workspace",
                 detach=False,
-                auto_remove=False
+                auto_remove=True
             )
 
-            exit_code = container.wait()
-            logs = container.logs(stdout=True, stderr=True)
-            print("Exit code:", exit_code)
-            print(logs.decode("utf-8"))
-            container.remove()
+            #exit_code = container.wait()
+            #logs = container.logs(stdout=True, stderr=True)
+            #print("Exit code:", exit_code)
+            #print(logs.decode("utf-8"))
+            #container.remove()
     
             # Depois, roda a classe principal
 
