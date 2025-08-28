@@ -1,0 +1,7 @@
+FROM gcc:11-slim
+
+# Define diretório de trabalho no container
+WORKDIR /workspace
+
+# Comando padrão é só abrir shell, execução será feita pelo Python
+CMD ["/bin/bash"]
