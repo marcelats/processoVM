@@ -17,6 +17,9 @@ os.makedirs(TMPDIR, exist_ok=True)
 async def execute(code: UploadFile = File(...), lang: str = Form(...)):
     
     if lang.lower() == "java":
+        
+        output_path = "/workspace/out"
+        os.makedirs(output_path, exist_ok=True)
         project_id = uuid.uuid4().hex
         project_path = os.path.join(TMPDIR, project_id)
         os.makedirs(project_path, exist_ok=True)
@@ -45,10 +48,18 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
     
         try:
             # Comando para compilar todos os arquivos .java
+            java_files = []
+            for root, dirs, files in os.walk(project_path):
+                for file in files:
+                    if file.endswith(".java"):
+                        java_files.append(os.path.join(root, file))
+            
+            # Comando javac
             compile_cmd = [
                 "javac",
                 "-cp", jar_path,
-            ] + [os.path.join(project_path, f) for f in os.listdir(project_path) if f.endswith(".java")]
+                "-d", output_path
+            ] + java_files
             
             container = client.containers.run(
                 "java-17-slim",           # Nome da imagem que você construiu
