@@ -6,6 +6,7 @@ import shutil
 from fastapi import FastAPI, UploadFile, File, Form
 from fastapi.responses import JSONResponse
 import tempfile
+import logging
 
 app = FastAPI()
 client = docker.from_env()
