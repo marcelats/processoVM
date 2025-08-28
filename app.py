@@ -16,7 +16,7 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
     contents = await code.read()
     print("contents:")
     print(contents[:100])
-    if lang lang.lower() == "java":
+    if lang.lower() == "java":
         project_id = uuid.uuid4().hex
         project_path = os.path.join(TMPDIR, project_id)
         os.makedirs(project_path, exist_ok=True)
