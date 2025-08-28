@@ -2,6 +2,7 @@ import docker
 import uuid
 import os
 import zipfile
+import shutil
 from fastapi import FastAPI, UploadFile, File, Form
 from fastapi.responses import JSONResponse
 import tempfile
