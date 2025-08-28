@@ -69,9 +69,9 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
                 "java-17-slim",           # Nome da imagem que você construiu
                 command=compile_cmd,
                 volumes = {
-    project_path: {"bind": "/workspace", "mode": "rw"},
-    os.path.dirname(jar_path): {"bind": "/workspace", "mode": "ro"}  # monta o jar
-},
+                    project_path: {"bind": "/workspace", "mode": "rw"},
+                    os.path.dirname(jar_path): {"bind": "/workspace", "mode": "ro"}  # monta o jar
+                },
                 working_dir="/workspace",
                 detach=False,
                 auto_remove=False
@@ -90,9 +90,9 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
                 "java-17-slim",
                 command=run_cmd,
                 volumes = {
-    project_path: {"bind": "/workspace", "mode": "rw"},
-    os.path.dirname(jar_path): {"bind": "/workspace", "mode": "ro"}  # monta o jar
-},
+                    project_path: {"bind": "/workspace", "mode": "rw"},
+                    os.path.dirname(jar_path): {"bind": "/workspace", "mode": "ro"}  # monta o jar
+                },
                 working_dir="/workspace",
                 detach=False,
                 auto_remove=True
