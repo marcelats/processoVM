@@ -52,7 +52,11 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
             for root, dirs, files in os.walk(project_path):
                 for file in files:
                     if file.endswith(".java"):
-                        java_files.append(os.path.join(root, file))
+                        # transforma o caminho do host para o caminho dentro do container
+                        container_path = os.path.join("/workspace", os.path.relpath(os.path.join(root, file), project_path))
+                        java_files.append(container_path)
+
+
             
             # Comando javac
             compile_cmd = [
