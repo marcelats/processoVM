@@ -27,6 +27,11 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
         with open(zip_path, "wb") as f:
             #f.write(await code.read())
             shutil.copyfileobj(code.file, f)
+        try:
+            with zipfile.ZipFile(zip_path, "r") as zip_ref:
+                zip_ref.extractall(project_path)
+        except zipfile.BadZipFile:
+            return {"status": "error", "message": "O arquivo enviado não é um zip válido"}
     
         # Descompacta o zip
         with zipfile.ZipFile(zip_path, "r") as zip_ref:
