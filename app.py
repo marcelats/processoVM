@@ -94,7 +94,6 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
                 command=run_cmd,
                 volumes = {
                     project_path: {"bind": "/workspace", "mode": "rw"},
-                    os.path.dirname(jar_path): {"bind": "/workspace", "mode": "ro"}  # monta o jar
                 },
                 working_dir="/workspace",
                 detach=False,
