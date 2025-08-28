@@ -14,9 +14,7 @@ os.makedirs(TMPDIR, exist_ok=True)
 
 @app.post("/execute")
 async def execute(code: UploadFile = File(...), lang: str = Form(...)):
-    contents = await code.read()
-    print("contents:")
-    print(contents[:100])
+    
     if lang.lower() == "java":
         project_id = uuid.uuid4().hex
         project_path = os.path.join(TMPDIR, project_id)
@@ -75,6 +73,9 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
     else:
 #with tempfile.TemporaryDirectory() as tmpdir:
     # Gera nome único para o arquivo
+        contents = await code.read()
+        print("contents:")
+        print(contents[:100])
         tmpdir = "/home/ubuntu/docker_exec"
         os.makedirs(tmpdir, exist_ok=True)
         os.chmod(tmpdir, 0o777)
