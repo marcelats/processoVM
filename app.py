@@ -55,13 +55,16 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
     try:
         # Cria o container (não auto_remove)]
         language = ""
+        image = ""
         if lang.lower() == "python":
             language = "python"
+            image = "python-simpy"
         else:
             language = "Rscript"
+            image = "r-simmer"
             
         container = client.containers.run(
-            "python-simpy",
+            image,
             command=[language, container_file_path],  # note o path no container
             volumes={tmpdir: {"bind": "/workspace", "mode": "rw"}},
             detach=False,
