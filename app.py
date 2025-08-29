@@ -192,11 +192,20 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
                 image,
                 command,  # note o path no container
                 volumes,
-                detach=False,
-                auto_remove=True
+                detach=True,
+                auto_remove=False
             )
-    
-       
+
+            result = container.wait()  # {"StatusCode": ...}
+            exit_code = result["StatusCode"]
+            
+            logs = container.logs(stdout=True, stderr=True).decode("utf-8")
+            
+            container.remove()
+            
+            print("Exit code:", exit_code)
+            print("Logs:\n", logs)
+                   
             # Agora você pode executar comandos dentro do container
             #exit_code, output = container.exec_run("ls -l /workspace")
             #print(output.decode())
