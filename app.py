@@ -126,14 +126,14 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
         print(tmpdir)
         file_name = ""
         if lang.lower() == "python":
-            file_name = "code.py"
+            file_name = f"{uuid.uuid4().hex}.py"
         elif lang.lower() == "c smpl":
             file_name = f"{uuid.uuid4().hex}.c"
         else:
             file_name = f"{uuid.uuid4().hex}.r"
         print("file_name:")
         print(file_name)
-        host_file_path = os.path.join(tmpdir, file_name)
+        host_file_path = os.path.join(tmpdir, "code.py")
         print("host_file_path:")
         print(host_file_path)
         # Grava o código do cliente
@@ -166,7 +166,7 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
             # Cria o container (não auto_remove)]
             command = ""
             image = ""
-            volumes = ""
+            volumes = {}
             if lang.lower() == "python":
                 command = ["python", container_file_path]
                 image = "python-simpy"
