@@ -116,7 +116,13 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
         os.chmod(tmpdir, 0o777)
         print("tmpdir:")
         print(tmpdir)
-        file_name = f"{uuid.uuid4().hex}.py"
+        file_name = ""
+        if lang.lower() == "python":
+            file_name = f"{uuid.uuid4().hex}.py"
+        elif lang.lower() == "c smpl":
+            file_name = f"{uuid.uuid4().hex}.c"
+        else:
+            file_name = f"{uuid.uuid4().hex}.r"
         print("file_name:")
         print(file_name)
         host_file_path = os.path.join(tmpdir, file_name)
@@ -162,7 +168,7 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
                 LIBS_DIR = "/opt/smpl"
                 language = [
                     "bash", "-c",
-                    "gcc /workspace/code/{main} -I/workspace/libs /workspace/libs/*.c -o /workspace/code/a.out && /workspace/code/a.out".format(main=main_file)
+                    "gcc /workspace/code/{main} -I/workspace/libs /workspace/libs/*.c -o /workspace/code/a.out && /workspace/code/a.out".format(main=host_file_path)
                 ]
                 image="c_runner:latest"
                 volumes = {
