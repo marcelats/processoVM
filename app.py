@@ -190,22 +190,16 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
                 image = "r-simmer"
                 volumes={tmpdir: {"bind": "/workspace", "mode": "rw"}}
                 
-            container = client.containers.run(
-                image,
-                command,
-                volumes=volumes,
-                working_dir="/workspace",
-                detach=True,
-                auto_remove=False
+            output = client.containers.run(
+                "python:3.11-slim",
+                command=["ls", "-l", "/workspace"],
+                volumes={tmpdir: {"bind": "/workspace", "mode": "rw"}},
+                detach=False,  # bloqueia até terminar
+                auto_remove=True
             )
-            result = container.wait()
-            logs = container.logs(stdout=True, stderr=True).decode()
-            print("Logs dentro do container:\n", logs)
-            print("Arquivos no host:", os.listdir(tmpdir))
-            exit_code, output = container.exec_run("ls -l /workspace")
-            print("Arquivos no container:", output.decode())
+            print(output.decode())
+            
 
-            container.remove()
             
                    
             # Agora você pode executar comandos dentro do container
