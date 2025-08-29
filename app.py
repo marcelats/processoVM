@@ -119,7 +119,7 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
         contents = await code.read()
         print("contents:")
         print(contents[:100])
-        tmpdir = "/home/ubuntu/docker_exec"
+        tmpdir = "/tmp/docker_exec"
         os.makedirs(tmpdir, exist_ok=True)
         os.chmod(tmpdir, 0o777)
         print("tmpdir:")
