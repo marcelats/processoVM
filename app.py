@@ -1,4 +1,5 @@
 import docker
+import os
 client = docker.from_env()
 
 tmpdir = os.path.abspath("/home/ubuntu/docker_exec")
