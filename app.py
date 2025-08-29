@@ -216,7 +216,7 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
             #container.exec_run("python /workspace/code.py")
     
             # Depois finalize o container
-            logs = container.decode("utf-8")
+            #logs = container.decode("utf-8")
             #container.stop()
             #container.remove()
         finally:
