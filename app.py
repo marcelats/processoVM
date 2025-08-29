@@ -1,13 +1,16 @@
 import docker
 import os
-client = docker.from_env()
+
+app = docker.from_env()  # corrigido de 'app'
 
 tmpdir = os.path.abspath("/home/ubuntu/docker_exec")
-container = client.containers.run(
+
+output = app.containers.run(
     "python:3.11-slim",
     command=["ls", "-l", "/workspace"],
     volumes={tmpdir: {'bind': '/workspace', 'mode': 'rw'}},
     detach=False,
     auto_remove=True
 )
-print(container.decode())
+
+print(output.decode())
