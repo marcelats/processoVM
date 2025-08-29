@@ -96,11 +96,19 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
                     project_path: {"bind": "/workspace", "mode": "rw"},
                 },
                 working_dir="/workspace",
-                detach=False,
-                auto_remove=True
+                detach=True,
+                auto_remove=False
             )
+            result = container.wait()   # retorna dict com {"StatusCode": ...}
+            exit_code = result["StatusCode"]
+            
+            # Captura os logs (stdout + stderr)
+            logs = container.logs(stdout=True, stderr=True).decode("utf-8")
+            
+            # Remove o container depois de pegar os logs
+            container.remove()
     
-            return {"status": "finished", "output": output.decode("utf-8")}
+            return {"status": "finished", "output": output.decode("utf-8"),"logs": logs}
         finally:
             # Limpeza
             #import shutil
