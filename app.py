@@ -124,13 +124,15 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
         os.chmod(tmpdir, 0o777)
         print("tmpdir:")
         print(tmpdir)
-        file_name = ""
         if lang.lower() == "python":
-            file_name = f"{uuid.uuid4().hex}.py"
+            file_name = "code.py"
         elif lang.lower() == "c smpl":
-            file_name = f"{uuid.uuid4().hex}.c"
+            file_name = "code.c"
         else:
-            file_name = f"{uuid.uuid4().hex}.r"
+            file_name = "code.r"
+        
+        host_file_path = os.path.join(tmpdir, file_name)
+
         print("file_name:")
         print(file_name)
         host_file_path = os.path.join(tmpdir, "code.py")
@@ -199,6 +201,9 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
             result = container.wait()
             logs = container.logs(stdout=True, stderr=True).decode()
             print("Logs dentro do container:\n", logs)
+            print("Arquivos no host:", os.listdir(tmpdir))
+            exit_code, output = container.exec_run("ls -l /workspace")
+            print("Arquivos no container:", output.decode())
 
             container.remove()
             
