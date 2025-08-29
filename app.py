@@ -126,7 +126,7 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
         print(tmpdir)
         file_name = ""
         if lang.lower() == "python":
-            file_name = f"{uuid.uuid4().hex}.py"
+            file_name = "code.py"
         elif lang.lower() == "c smpl":
             file_name = f"{uuid.uuid4().hex}.c"
         else:
