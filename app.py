@@ -577,13 +577,13 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
             output = client.containers.run(
 
 
-                "python:3.11-slim",
+                image,
 
 
-                command=[language, container_file_path],
+                command,
 
 
-                volumes={tmpdir: {"bind": "/workspace", "mode": "rw"}},
+                volumes,
 
 
                 detach=False,  # bloqueia até terminar
