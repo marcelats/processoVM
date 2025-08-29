@@ -580,7 +580,7 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
                 "python:3.11-slim",
 
 
-                command=["ls", "-l", "/workspace"],
+                command=[language, container_file_path],
 
 
                 volumes={tmpdir: {"bind": "/workspace", "mode": "rw"}},
