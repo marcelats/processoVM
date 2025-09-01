@@ -103,7 +103,7 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
             print("O container terminou com erro:", exit_code)
         
         container.remove()
-        logs = container.decode("utf-8")
+        #logs = container.decode("utf-8")
         #container.stop()
         #container.remove()
     except docker.errors.ContainerError as e:
@@ -122,4 +122,4 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
     
     
     
-    return logs
+    #return logs
