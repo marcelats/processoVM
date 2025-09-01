@@ -89,12 +89,12 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
     
         detach=True,
     
-        auto_remove=False
+        auto_remove=True
     
     )
         logs = container.decode("utf-8")
-        container.stop()
-        container.remove()
+        #container.stop()
+        #container.remove()
     finally:
         if os.path.exists(host_file_path):
             os.remove(host_file_path)
