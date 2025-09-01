@@ -79,7 +79,7 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
             command = ["Rscript", container_file_path]
             image = "r-simmer"
             volumes={tmpdir: {"bind": "/workspace", "mode": "rw"}}
-        output = client.containers.run(
+        container = client.containers.run(
     
         "python-simpy",
     
