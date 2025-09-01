@@ -51,7 +51,7 @@ main()
 
         /*  centro de servio = CS_1 */
         case 2 : 
-          if (request(CS_1, Customer,0) == 0)
+          if (request("",CS_1, Customer,0) == 0)
              schedule(3,expntl(Ts1), Customer);
           break;
         case 3 : 
@@ -63,7 +63,7 @@ main()
 
         /*  centro de servio = CS_2 */
         case 4 : 
-          if (request(CS_2, Customer,0) == 0)
+          if (request("",CS_2, Customer,0) == 0)
              schedule(5,expntl(Ts2), Customer);
           break;
         case 5 : 
