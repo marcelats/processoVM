@@ -83,7 +83,7 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
     
         image,
     
-        command=command,
+        command=["ls", "-l", "/workspace"],
     
         volumes=volumes,
     
