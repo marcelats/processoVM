@@ -419,12 +419,12 @@ static void msg(int n,int i,char *s,int q1,int q2)
         "   RESCHEDULE","   RESUME", "   SUSPEND", "REQUEST", "PREEMPT",
         "RELEASE", "   QUEUE", "   DEQUEUE", "   RESERVE", "FACILITY" };
       if (clock>tl)     /* print time stamp (if time has advanced) */
-        then {tl=clock; fprintf(opf,"  time %-12.3f  ",clock);}
-        else fprintf(opf,"%21s",m[0]);
+        then {tl=clock; printf("  time %-12.3f  ",clock);}
+        else printf("%21s",m[0]);
       if (i>=0)         /* print token number if specified */
-        then fprintf(opf,"--  token %-4d  -- ",i);
-        else fprintf(opf,"--              -- ");
-      fprintf(opf,"%s %s",m[n],s);  /* print basic message */
+        then printf("--  token %-4d  -- ",i);
+        else printf("--              -- ");
+      printf("%s %s",m[n],s);  /* print basic message */
       switch(n)
         { /* append qualifier */
           case 1:
@@ -432,25 +432,25 @@ static void msg(int n,int i,char *s,int q1,int q2)
           case 3:
           case 4:
           case 5:
-          case 6:  fprintf(opf," EVENT %d",q1); break;
+          case 6:  printf(" EVENT %d",q1); break;
           case 7:
           case 8:  switch(q1)
                      {
-                       case 0: fprintf(opf,":  RESERVED"); break;
-                       case 1: fprintf(opf,":  QUEUED  (inq = %d)",q2);
+                       case 0: printf(":  RESERVED"); break;
+                       case 1: printf(":  QUEUED  (inq = %d)",q2);
                                break;
-                       case 2: fprintf(opf,":  INTERRUPT"); break;
+                       case 2: printf(":  INTERRUPT"); break;
                        default: break;
                      }
                    break;
           case 9:  break;
           case 10:
-          case 11: fprintf(opf," token %d  (inq = %d)",q1,q2); break;
-          case 12: fprintf(opf," for token %d",q1); break;
-          case 13: fprintf(opf,":  f = %d",q1); break;
+          case 11: printf(" token %d  (inq = %d)",q1,q2); break;
+          case 12: printf(" for token %d",q1); break;
+          case 13: printf(":  f = %d",q1); break;
           default: break;
         }
-      fprintf(opf,"\n"); end_line();
+      printf("\n"); end_line();
     }
 
 /*-------------------------  TRACE LINE END  -------------------------*/
@@ -521,7 +521,7 @@ void reportf(void)
   {
     int f;
     if ((f=fchn)==0)
-      then fprintf(opf,"\nno facilities defined:  report abandoned\n");
+      then printf("\nno facilities defined:  report abandoned\n");
       else
         { /* f = 0 at end of facility chain */
           while(f) {f=rept_page(f); if (f>0) then endpage();}
@@ -537,11 +537,11 @@ static int rept_page(int fnxt)
         "MEAN BUSY     MEAN QUEUE        OPERATION COUNTS",
         " FACILITY          UTIL.    ",
         " PERIOD        LENGTH     RELEASE   PREEMPT   QUEUE" };
-      fprintf(opf,"\n%51s\n\n\n",s[0]);
-      fprintf(opf,"%-s%-54s%-s%11.3f\n",s[1],mname(),s[2],clock);
-      fprintf(opf,"%68s%11.3f\n\n",s[3],clock-start);
-      fprintf(opf,"%75s\n",s[4]);
-      fprintf(opf,"%s%s\n",s[5],s[6]);
+      printf("\n%51s\n\n\n",s[0]);
+      printf("%-s%-54s%-s%11.3f\n",s[1],mname(),s[2],clock);
+      printf("%68s%11.3f\n\n",s[3],clock-start);
+      printf("%75s\n",s[4]);
+      printf("%s%s\n",s[5],s[6]);
       f=fnxt; lft-=8;
       while(f && lft--)
         {
@@ -549,7 +549,7 @@ static int rept_page(int fnxt)
           if (l1[f]==1)
             then sprintf(fn,"%s",fname(f));
             else sprintf(fn,"%s[%d]",fname(f),l1[f]);
-          fprintf(opf," %-17s%6.7f %10.7f %13.7f %11d %9d %7d\n",
+          printf(" %-17s%6.7f %10.7f %13.7f %11d %9d %7d\n",
             fn,U(f),B(f),Lq(f),n,(int)l4[f+1],(int)l4[f]);
           f=l2[f+1];
         }
