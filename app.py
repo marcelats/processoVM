@@ -188,7 +188,7 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
             #logs = container.decode("utf-8")
             #container.stop()
             #container.remove()
-        #finally:
+        finally:
         # Apaga o arquivo enviado pelo cliente para não encher a VM
         #    if os.path.exists(host_file_path):
         #        os.remove(host_file_path)
