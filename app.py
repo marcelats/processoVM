@@ -118,7 +118,7 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
         file_name=""
         if lang.lower() == "python":
             file_name = "code.py"
-        elif lang.lower() == "c smpl" || lang.lower() == "c smplx":
+        elif lang.lower() == "c smpl" or lang.lower() == "c smplx":
             file_name = "code.c"
         else:
             file_name = "code.r"
