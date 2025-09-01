@@ -165,7 +165,7 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
                 image="c_runner:latest"
                 volumes = {
                     tmpdir: {"bind": "/workspace", "mode": "rw"},
-                    LIBS_DIR: {"bind": "/smpl", "mode": "ro"},
+                    LIBS_DIR: {"bind": "/smpl", "mode": "rw"},
                 }
             else:
                 command = ["Rscript", container_file_path]
