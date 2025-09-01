@@ -4,7 +4,7 @@
 #include <string.h>
 #include "smpl.h"
 #include "declaracoes.h" /* estruturas e var*/
-#include "randpar.h"
+//#include "randpar.h"
 
 
 
