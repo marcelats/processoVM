@@ -122,9 +122,9 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
         host_file_path = os.path.join(tmpdir, file_name)
         print("file_name:")
         print(file_name)
-        #host_file_path = os.path.join(tmpdir, "code.py")
-        #print("host_file_path:")
-        #print(host_file_path)
+        host_file_path = os.path.join(tmpdir, "code.py")
+        print("host_file_path:")
+        print(host_file_path)
         # Grava o código do cliente
         #with open(host_file_path, "wb") as f:
         #    f.write(contents)
