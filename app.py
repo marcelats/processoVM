@@ -99,7 +99,7 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
     # esse erro é lançado se o exit code != 0
         print("Erro no container!")
         print("Saída de erro (stderr):")
-        print(e.stderr.decode())
+        print(e.stderr)
     finally:
         if os.path.exists(host_file_path):
             os.remove(host_file_path)
