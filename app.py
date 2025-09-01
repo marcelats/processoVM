@@ -160,11 +160,12 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
                 LIBS_DIR = "/opt/smpl"
                 command = [
                     "bash", "-c",
-                    "gcc /workspace/code.c -I/opt/smpl/include -L/opt/smpl/lib -lsmpl -o /workspace/a.out && /workspace/a.out"
+                    "gcc /workspace/code.c -I/smpl/include -L/smpl/lib -lsmpl -o /workspace/a.out && /workspace/a.out"
                 ]
                 image="c_runner:latest"
                 volumes = {
                     tmpdir: {"bind": "/workspace", "mode": "rw"},
+                    LIBS_DIR: {"bind": "/smpl", "mode": "ro"},
                 }
             else:
                 command = ["Rscript", container_file_path]
