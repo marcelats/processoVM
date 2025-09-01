@@ -146,11 +146,11 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
         #container_file_path = f"/workspace/{file_name}"
         #print("container_file_path")
         #print(container_file_path)
-        #try:
+        try:
             # Cria o container (não auto_remove)]
-        #    command = []
-        #    image = ""
-        #    volumes = {}
+            command = []
+            image = ""
+            volumes = {}
             if lang.lower() == "python":
                 command = ["python", container_file_path]
                 image = "python-simpy"
