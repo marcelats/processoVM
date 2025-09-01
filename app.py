@@ -95,6 +95,11 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
         logs = container.decode("utf-8")
         #container.stop()
         #container.remove()
+    except docker.errors.ContainerError as e:
+    # esse erro é lançado se o exit code != 0
+        print("Erro no container!")
+        print("Saída de erro (stderr):")
+        print(e.stderr.decode())
     finally:
         if os.path.exists(host_file_path):
             os.remove(host_file_path)
