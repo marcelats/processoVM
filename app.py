@@ -21,8 +21,8 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
     #tmpdir = os.path.abspath("/tmp/docker_exec")
     #os.makedirs(tmpdir, exist_ok=True)
     #os.chmod(tmpdir, 0o777)
-    print("tmpdir:")
-    print(tmpdir)
+    #print("tmpdir:")
+    #print(tmpdir)
     tmpdir = os.path.abspath("/home/ubuntu/docker_exec")
     output = client.containers.run(
     
