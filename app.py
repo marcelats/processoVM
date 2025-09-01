@@ -157,7 +157,7 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
                 volumes={tmpdir: {"bind": "/workspace", "mode": "rw"}}
             elif lang.lower() == "c smpl":
                 
-                LIBS_DIR = "/opt/smpl"
+                LIBS_DIR = "/home/ubuntu/smpl"
                 command = [
                     "bash", "-c",
                     # compila seu código + todos os .c da pasta smpl
