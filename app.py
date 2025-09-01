@@ -53,6 +53,9 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
             print(f"Arquivo: {filename}")
             print(f"Conteúdo (100 primeiros caracteres):\n{content}")
             print("-" * 40)
+    container_file_path = f"/workspace/{file_name}"
+    print("container_file_path")
+    print(container_file_path)
     output = client.containers.run(
     
         "python:3.11-slim",
