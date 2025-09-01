@@ -108,18 +108,18 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
         contents = await code.read()
         print("contents:")
         print(contents[:100])
-        #tmpdir = os.path.abspath("/tmp/docker_exec")
+        tmpdir = os.path.abspath("/tmp/docker_exec")
         #os.makedirs(tmpdir, exist_ok=True)
         #os.chmod(tmpdir, 0o777)
         #print("tmpdir:")
         #print(tmpdir)
-        #if lang.lower() == "python":
-        #    file_name = "code.py"
-        #elif lang.lower() == "c smpl":
-        #    file_name = "code.c"
-        #else:
-        #    file_name = "code.r"
-        #host_file_path = os.path.join(tmpdir, file_name)
+        if lang.lower() == "python":
+            file_name = "code.py"
+        elif lang.lower() == "c smpl":
+            file_name = "code.c"
+        else:
+            file_name = "code.r"
+        host_file_path = os.path.join(tmpdir, file_name)
         #print("file_name:")
         #print(file_name)
         #host_file_path = os.path.join(tmpdir, "code.py")
@@ -190,6 +190,6 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
             #container.remove()
         finally:
         # Apaga o arquivo enviado pelo cliente para não encher a VM
-        #    if os.path.exists(host_file_path):
-        #        os.remove(host_file_path)
-        #        print(f"Arquivo {host_file_path} removido.")
+            if os.path.exists(host_file_path):
+                os.remove(host_file_path)
+                print(f"Arquivo {host_file_path} removido.")
