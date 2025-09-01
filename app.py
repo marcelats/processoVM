@@ -15,7 +15,7 @@ os.makedirs(TMPDIR, exist_ok=True)
 @app.post("/execute")
 async def execute(code: UploadFile = File(...), lang: str = Form(...)):
 
-    #contents = await code.read()
+    contents = await code.read()
     #print("contents:")
     #print(contents[:100])
     #tmpdir = os.path.abspath("/tmp/docker_exec")
