@@ -12,23 +12,34 @@ client = docker.from_env()
 TMPDIR = "/home/ubuntu/docker_exec"
 os.makedirs(TMPDIR, exist_ok=True)
 
-tmpdir = os.path.abspath("/home/ubuntu/docker_exec")
-output = client.containers.run(
+@app.post("/execute")
+async def execute(code: UploadFile = File(...), lang: str = Form(...)):
 
-    "python:3.11-slim",
-
-    command=["ls", "-l", "/workspace"],
-
-    volumes={tmpdir: {'bind': '/workspace', 'mode': 'rw'}},
-
-    detach=False,
-
-    auto_remove=True
-
-)
-
-
-
-
-
-print(output.decode())
+    contents = await code.read()
+    print("contents:")
+    print(contents[:100])
+    tmpdir = os.path.abspath("/tmp/docker_exec")
+    os.makedirs(tmpdir, exist_ok=True)
+    os.chmod(tmpdir, 0o777)
+    print("tmpdir:")
+    print(tmpdir)
+    tmpdir = os.path.abspath("/home/ubuntu/docker_exec")
+    output = client.containers.run(
+    
+        "python:3.11-slim",
+    
+        command=["ls", "-l", "/workspace"],
+    
+        volumes={tmpdir: {'bind': '/workspace', 'mode': 'rw'}},
+    
+        detach=False,
+    
+        auto_remove=True
+    
+    )
+    
+    
+    
+    
+    
+    print(output.decode())
