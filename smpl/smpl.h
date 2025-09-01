@@ -53,7 +53,7 @@ real Lq(int f);
 char *fname(int f);
 char *mname(void);
 int facility(char *s, int n);
-int request(int f, int tkn, int pri);
+int request(char *nome_recurso, int f, int tkn, int pri);
 int cancel (int ev);
 int preempt(int f, int tkn, int pri);
 int status(int f);
