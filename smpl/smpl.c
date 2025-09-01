@@ -252,7 +252,7 @@ static void resetf(void)
   }
 
 /*------------------------  REQUEST FACILITY  ------------------------*/
-int request(int f,int tkn, int pri)
+int request(char *nome_recurso, int f,int tkn, int pri)
     {
       int i,r;
       if (l2[f]<l1[f])
