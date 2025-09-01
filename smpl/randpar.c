@@ -16,7 +16,6 @@ void erro(char *mensagem)
  smplx_exit();
 }
 
-//typedef double real; /* tratar real como double  no parsmpl !!!!!!!! */
       
 
 #define A 16807L           /* multiplier (7**5) for 'ranf' */
@@ -139,4 +138,5 @@ double normal(double x,double s)
           }
       return(x+z1*s);
   }
+
 
