@@ -10,7 +10,11 @@
 
 #include <math.h>
 
-extern void erro(char *);
+void erro(char *mensagem)
+{
+ printf("\n %s \n",mensagem);
+ smplx_exit();
+}
 
 //typedef double real; /* tratar real como double  no parsmpl !!!!!!!! */
       
@@ -135,3 +139,4 @@ double normal(double x,double s)
           }
       return(x+z1*s);
   }
+
