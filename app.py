@@ -171,7 +171,7 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
                 volumes={tmpdir: {"bind": "/workspace", "mode": "rw"}}
             output = client.containers.run(
                 image,
-                command = "ls -l /workspace",
+                command = ["ls -l /workspace"],
                 volumes,
                 detach=False,  # bloqueia até terminar
                 auto_remove=True
