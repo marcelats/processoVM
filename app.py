@@ -86,7 +86,7 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
         print("fim")    
     output = client.containers.run(
     
-        "python:3.11-slim",
+        "python-simpy",
     
         command=["ls", "-l", "/workspace"],
     
