@@ -38,7 +38,7 @@ void smpl(int m, char *s);
 void reset(void);
 void schedule( int ev, real te, int tkn);
 void cause(int *ev, int *tkn);
-void release(int f, int tkn);
+void release(char *nadachar,int f, int tkn);
 void trace(int n);
 void pause(void);
 void error(int n, char *s);
