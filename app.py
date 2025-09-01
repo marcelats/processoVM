@@ -208,11 +208,13 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
             if os.path.exists(host_file_path):
                 os.remove(host_file_path)
                 print(f"Arquivo {host_file_path} removido.")
-            print("fim")    
-        
-        
-        
-    
-    
+            for filename in os.listdir(tmpdir):
+                if filename.endswith(".out"):
+                    file_path = os.path.join(tmpdir, filename)
+                    try:
+                        os.remove(file_path)
+                        print(f"Executável {file_path} removido.")
+                    except Exception as e:
+                        print(f"Erro ao remover {file_path}: {e}")
     
     return logs
