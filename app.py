@@ -79,7 +79,7 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
                 "-cp", "/workspace/out:/workspace/javasim-2.3.jar",
                 "com.javasim.teste.basic.Main"
             ]
-            output = client.containers.run(
+            container = client.containers.run(
                 "java-17-slim",
                 command=run_cmd,
                 volumes = {
@@ -89,13 +89,18 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
                 detach=True,
                 auto_remove=False
             )
-            result = container.wait()   # retorna dict com {"StatusCode": ...}
-            exit_code = result["StatusCode"]
-            # Captura os logs (stdout + stderr)
-            logs = container.logs(stdout=True, stderr=True).decode("utf-8")
-            # Remove o container depois de pegar os logs
+            exit_code = container.wait()["StatusCode"]
+    
+            logs = container.logs(stdout=True, stderr=True).decode()
+            
+            print("Logs completos:")
+            print(logs)
+            
+            if exit_code != 0:
+                print("O container terminou com erro:", exit_code)
+            
             container.remove()
-            return {"status": "finished", "output": output.decode("utf-8"),"logs": logs}
+            return {"status": "finished", "output": container.decode("utf-8"),"logs": logs}
         finally:
             # Limpeza
             #import shutil
