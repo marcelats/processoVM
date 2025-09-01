@@ -326,7 +326,7 @@ int preempt(int f,int tkn,int pri)
     }
 
 /*------------------------  RELEASE FACILITY  ------------------------*/
-void release(int f, int tkn)
+void release(char *nadachar,int f, int tkn)
     {
       int i,j=0,k,m; real te;
       /* locate server (j) reserved by releasing token */
