@@ -52,7 +52,7 @@ int stream(int n)
     }
 
 /*--------------------------  SET/GET SEED  --------------------------*/
-int seed(int Ik, int n)
+long seed(long Ik, int n)
     { /* set seed of stream n for Ik>0, return current seed for Ik=0  */
       if ((n<1)||(n>15)) then error(0,"seed Argument Error");
       if (Ik>0L) then  In[n]=Ik;
