@@ -100,7 +100,7 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
                 print("O container terminou com erro:", exit_code)
             
             container.remove()
-            return {"status": "finished", "output": container.decode("utf-8"),"logs": logs}
+
         finally:
             # Limpeza
             #import shutil
