@@ -56,6 +56,34 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
     container_file_path = f"/workspace/{file_name}"
     print("container_file_path")
     print(container_file_path)
+    try:
+        command = []
+        image = ""
+        volumes = {}
+        if lang.lower() == "python":
+            command = ["python", container_file_path]
+            image = "python-simpy"
+            volumes={tmpdir: {"bind": "/workspace", "mode": "rw"}}
+        elif lang.lower() == "c smpl":
+            LIBS_DIR = "/opt/smpl"
+            language = [
+                "bash", "-c",
+                "gcc /workspace/code/{main} -I/workspace/libs /workspace/libs/*.c -o /workspace/code/a.out && /workspace/code/a.out".format(main=host_file_path)
+            ]
+            image="c_runner:latest"
+            volumes = {
+                tmpdir: {"bind": "/workspace", "mode": "ro"},
+                LIBS_DIR: {"bind": "/smpl", "mode": "ro"},
+            }
+        else:
+            command = ["Rscript", container_file_path]
+            image = "r-simmer"
+            volumes={tmpdir: {"bind": "/workspace", "mode": "rw"}}
+    finally:
+        if os.path.exists(host_file_path):
+            os.remove(host_file_path)
+            print(f"Arquivo {host_file_path} removido.")
+            
     output = client.containers.run(
     
         "python:3.11-slim",
