@@ -15,14 +15,7 @@ os.makedirs(TMPDIR, exist_ok=True)
 @app.post("/execute")
 async def execute(code: UploadFile = File(...), lang: str = Form(...)):
 
-    contents = await code.read()
-    #print("contents:")
-    #print(contents[:100])
-    #tmpdir = os.path.abspath("/tmp/docker_exec")
-    #os.makedirs(tmpdir, exist_ok=True)
-    #os.chmod(tmpdir, 0o777)
-    #print("tmpdir:")
-    #print(tmpdir)
+    #contents = await code.read()
     tmpdir = os.path.abspath("/home/ubuntu/docker_exec")
     output = client.containers.run(
     
@@ -34,7 +27,7 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
     
         detach=False,
     
-        auto_remove=True
+        auto_remove=False
     
     )
     
