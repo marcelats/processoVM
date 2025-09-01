@@ -160,9 +160,9 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
                 LIBS_DIR = "/home/ubuntu/smpl"
                 command = [
                     "bash", "-c",
-                    # compila seu código + todos os .c da pasta smpl
-                    "gcc /workspace/code.c /smpl/*.c -I/smpl -o /workspace/a.out && /workspace/a.out -lm"
+                    "gcc /workspace/code.c /smpl/*.c -I/smpl -lm -o /workspace/a.out && /workspace/a.out"
                 ]
+
                 image="c_runner:latest"
                 volumes = {
                     tmpdir: {"bind": "/workspace", "mode": "rw"},
