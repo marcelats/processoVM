@@ -87,7 +87,7 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
     
         volumes={tmpdir: {'bind': '/workspace', 'mode': 'rw'}},
     
-        detach=False,
+        detach=True,
     
         auto_remove=False
     
