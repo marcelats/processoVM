@@ -80,10 +80,10 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
             image = "r-simmer"
             volumes={tmpdir: {"bind": "/workspace", "mode": "rw"}}
     finally:
-        if os.path.exists(host_file_path):
-            os.remove(host_file_path)
-            print(f"Arquivo {host_file_path} removido.")
-            
+        #if os.path.exists(host_file_path):
+        #    os.remove(host_file_path)
+        #    print(f"Arquivo {host_file_path} removido.")
+        print("fim")    
     output = client.containers.run(
     
         "python:3.11-slim",
