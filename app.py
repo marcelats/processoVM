@@ -36,6 +36,13 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
     host_file_path = os.path.join(tmpdir, "code.py")
     print("host_file_path:")
     print(host_file_path)
+    with open(host_file_path, "wb") as f:
+        f.write(contents)
+        print("f:")
+        print(f)
+    with open(host_file_path, "rb") as f:
+        print("dentro de f:")
+        print(f.read(100))
     output = client.containers.run(
     
         "python:3.11-slim",
