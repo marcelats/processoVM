@@ -120,8 +120,8 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
         else:
             file_name = "code.r"
         host_file_path = os.path.join(tmpdir, file_name)
-        #print("file_name:")
-        #print(file_name)
+        print("file_name:")
+        print(file_name)
         #host_file_path = os.path.join(tmpdir, "code.py")
         #print("host_file_path:")
         #print(host_file_path)
