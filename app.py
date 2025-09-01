@@ -16,6 +16,8 @@ os.makedirs(TMPDIR, exist_ok=True)
 async def execute(code: UploadFile = File(...), lang: str = Form(...)):
 
     contents = await code.read()
+    print("contents:")
+    print(contents[:100])
     tmpdir = os.path.abspath("/home/ubuntu/docker_exec")
     output = client.containers.run(
     
