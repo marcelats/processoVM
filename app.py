@@ -79,12 +79,7 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
             command = ["Rscript", container_file_path]
             image = "r-simmer"
             volumes={tmpdir: {"bind": "/workspace", "mode": "rw"}}
-    finally:
-        #if os.path.exists(host_file_path):
-        #    os.remove(host_file_path)
-        #    print(f"Arquivo {host_file_path} removido.")
-        print("fim")    
-    output = client.containers.run(
+        output = client.containers.run(
     
         "python-simpy",
     
@@ -97,9 +92,18 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
         auto_remove=False
     
     )
+        logs = container.decode("utf-8")
+        container.stop()
+        container.remove()
+    finally:
+        if os.path.exists(host_file_path):
+            os.remove(host_file_path)
+            print(f"Arquivo {host_file_path} removido.")
+        print("fim")    
     
     
     
     
     
-    print(output.decode())
+    
+    return logs
