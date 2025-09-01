@@ -213,4 +213,4 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
     
     
     
-    #return logs
+    return logs
