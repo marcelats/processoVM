@@ -158,7 +158,7 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
             elif lang.lower() == "c smpl":
                 
                 LIBS_DIR = "/opt/smpl"
-                language = [
+                command = [
                     "bash", "-c",
                     "gcc /workspace/code/{main} -I/workspace/libs /workspace/libs/*.c -o /workspace/code/a.out && /workspace/code/a.out".format(main=host_file_path)
                 ]
