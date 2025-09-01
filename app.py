@@ -156,8 +156,7 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
                 image = "python-simpy"
                 volumes={tmpdir: {"bind": "/workspace", "mode": "rw"}}
             elif lang.lower() == "c smpl":
-                sudo mkdir -p /opt/smpl
-                sudo chmod -R 755 /opt/smpl
+                
                 LIBS_DIR = "/opt/smpl"
                 language = [
                     "bash", "-c",
