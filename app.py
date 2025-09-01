@@ -83,9 +83,9 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
     
         image,
     
-        command,
+        command=command,
     
-        volumes,
+        volumes=volumes,
     
         detach=False,
     
