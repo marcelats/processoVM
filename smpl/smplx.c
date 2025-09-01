@@ -519,7 +519,7 @@ void insere_lista_eventos_futuros(int num_evento, double te, int token)
     ------------------------------------------------------------------------------------------------- */   
 
 
-void release(char *nome_recurso,int token)
+void release(char *nome_recurso,int token,int nada)
 {
  tipo_cabecalho *ponteiro_cab, /* ponteiros para percorrer o cabecalho */
                 *auxiliar;
