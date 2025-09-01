@@ -87,11 +87,22 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
     
         volumes=volumes,
     
-        detach=False,
+        detach=True,
     
-        auto_remove=True
+        auto_remove=False
     
     )
+        exit_code = container.wait()["StatusCode"]
+
+        logs = container.logs(stdout=True, stderr=True).decode()
+        
+        print("Logs completos:")
+        print(logs)
+        
+        if exit_code != 0:
+            print("O container terminou com erro:", exit_code)
+        
+        container.remove()
         logs = container.decode("utf-8")
         #container.stop()
         #container.remove()
