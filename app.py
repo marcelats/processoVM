@@ -24,7 +24,15 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
     os.chmod(tmpdir, 0o777)
     print("tmpdir:")
     print(tmpdir)
-    
+    file_name=""
+    if lang.lower() == "python":
+        file_name = "code.py"
+    elif lang.lower() == "c smpl":
+        file_name = "code.c"
+    else:
+        file_name = "code.r"
+    print("file_name:")
+    print(file_name)
     output = client.containers.run(
     
         "python:3.11-slim",
