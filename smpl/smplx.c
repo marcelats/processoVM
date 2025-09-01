@@ -328,10 +328,10 @@ tipo_lista_eventos *aloca_mem_lista_eventos_futuros()
  
    ------------------------------------------------------------------------------------------------- */   
 
-double time()
+/*double time()
 {
  return(clock_simulacao);
-}
+}*/
    
 /* ------------------------------------------------------------------------------------------------- */
 
@@ -347,11 +347,11 @@ double time()
    ------------------------------------------------------------------------------------------------- */   
 
 
-int facility(char *nome_recurso, int num_serv)
+/*int facility(char *nome_recurso, int num_serv)
 {
- int indice;                    /* para alocar total de nos = num_serv */
- tipo_descritor_recursos *ponteiro_rec;  /* ponteiro para o no recurso */
- tipo_cabecalho *auxiliar,               /* ponteiros para o cabecalho */
+ int indice;                    
+ tipo_descritor_recursos *ponteiro_rec;  
+ tipo_cabecalho *auxiliar,               
                 *ponteiro_cab;
                  
  tipo_servidor_recursos *ponteiro_serv_rec,
@@ -366,7 +366,7 @@ int facility(char *nome_recurso, int num_serv)
    erro("Rotina: facility erro ao alocar memoria descritor recurso");
   
    auxiliar = cabecalho_descritor;
-   if (auxiliar == NULL)   /* nenhum recurso definido */
+   if (auxiliar == NULL)   
    {
     cabecalho_descritor = ponteiro_cab;
     auxiliar = ponteiro_cab;
@@ -386,9 +386,9 @@ int facility(char *nome_recurso, int num_serv)
     }
      
      auxiliar->pont_descritor = ponteiro_rec;
-     auxiliar->prox_cabecalho = NULL; /* a insercao e feita no final da lista */
+     auxiliar->prox_cabecalho = NULL; 
      
-     /* insere os dados no descritor do recurso */
+     
      ponteiro_rec->nome = nome_recurso;
      ponteiro_rec->tempo_ultima_alteracao_fila = 0.0;
      ponteiro_rec->lenght_time_product_sum = 0.0;
@@ -399,13 +399,13 @@ int facility(char *nome_recurso, int num_serv)
      ponteiro_rec->num_servidores = num_serv;
      ponteiro_rec->lista_eventos_recurso = NULL;
      
-     /* para cada servidor e criado um no na lista de servidores do recurso */
+     
      for (indice = 1; indice <= num_serv; indice++)
      {
       aux = aloca_mem_servidor_recursos();
       if (aux == NULL)
         erro("Rotina: facility - Erro ao alocar memoria para a lista de servidores");
-      if (indice == 1)  /* primeiro no da lista */
+      if (indice == 1)  
       { 
        ponteiro_serv_rec = aux;
        ponteiro_rec->fila_servidor_recursos = aux;
@@ -423,9 +423,8 @@ int facility(char *nome_recurso, int num_serv)
       aux->num_token = 0;
       aux->prox_servidor_recursos = NULL;  
      }
-  /*printf("\n\n CPU - facility() - Estou na facility\n\n");
-  printf("\n\n CPU - facility() - nome recurso %s\n\n",ponteiro_rec->nome);*/
-} 
+  
+} */
 
 /* ------------------------------------------------------------------------------------------------- */
 
@@ -519,21 +518,19 @@ void insere_lista_eventos_futuros(int num_evento, double te, int token)
     ------------------------------------------------------------------------------------------------- */   
 
 
-void release(char *nome_recurso,int token,int nada)
+/*void release(char *nome_recurso,int token,int nada)
 {
- tipo_cabecalho *ponteiro_cab, /* ponteiros para percorrer o cabecalho */
-                *auxiliar;
+ tipo_cabecalho *ponteiro_cab, 
  tipo_servidor_recursos *ponteiro_serv_rec;
  tipo_fila_eventos *ponteiro_fila_eventos;
  tipo_descritor_recursos *ponteiro_rec;
  tipo_lista_eventos *ponteiro_lista_eventos;
  
- double te; /* para determinar o tempo de ocorrencia de um evento preempted */
- 
+ double te; 
  ponteiro_cab = cabecalho_descritor;
 
 
- /* procura pelo recurso identificado por nome_recurso */
+ 
  
  while ( (ponteiro_cab != NULL) && 
          (strcmp(ponteiro_cab->pont_descritor->nome,nome_recurso)) )
@@ -544,43 +541,39 @@ void release(char *nome_recurso,int token,int nada)
    erro("Rotina: release() - Erro: recurso nao encontrado para ser liberado");
    
    
- /*recurso encontrado - busca pelo servidor associado ao token 
-   se os tokens sao iguais, libera o primeiro servidor que encontrar */                
+               
  
  ponteiro_serv_rec = ponteiro_cab->pont_descritor->fila_servidor_recursos;
  
  while ( (ponteiro_serv_rec != NULL) && (ponteiro_serv_rec->num_token != token) ) 
    ponteiro_serv_rec = ponteiro_serv_rec->prox_servidor_recursos;
  
- if (ponteiro_serv_rec == NULL) /* nao existe servidor do recurso associado ao token */
+ if (ponteiro_serv_rec == NULL) 
    erro("Rotina: release() - Erro: nao existe servidor associado ao token");
    
- /* servidor encontrado - sera liberado - o no permanece, os dados sao apagados */
  
- /* zero para num_token indica que o servidor foi liberado */
  ponteiro_serv_rec->num_token = 0;    
- ponteiro_serv_rec->contador_release++; /* incrementa o contador de release */
+ ponteiro_serv_rec->contador_release++; 
 
- /* -------- confirmar essa operacao no macdougall, alterado em 15/08/96 --------- */
+ 
  ponteiro_serv_rec->soma_periodo_ocupado += (clock_simulacao - ponteiro_serv_rec->inicio_periodo_ocupado); 
  
  ponteiro_serv_rec->inicio_periodo_ocupado = 0.0;
  
  ponteiro_serv_rec->prioridade_usuario = 0;
  
- /* decrementa o numero de servidores ocupados do recurso */
+ 
  ponteiro_cab->pont_descritor->num_servidores_ocupados--;
  
- /* depois de liberar servidor, verifica a fila associada ao recurso */
+ 
  if (ponteiro_cab->pont_descritor->lista_eventos_recurso != NULL)
  {
-  /* tira evento da cabeca da fila de eventos e verifica se bloqueado ou preempted:
-    - se bloqueado vai para a cabeca da lista de eventos futuros */
+  
  
  
    ponteiro_rec = ponteiro_cab->pont_descritor;
    
-   /* ponteiro_fila_eventos aponta para o no a ser removido */
+   
    ponteiro_fila_eventos = ponteiro_rec->lista_eventos_recurso;
 
    ponteiro_rec->lista_eventos_recurso = ponteiro_rec->lista_eventos_recurso->prox_fila_eventos;
@@ -593,64 +586,53 @@ void release(char *nome_recurso,int token,int nada)
    ponteiro_rec->contador_release_fila++;
    ponteiro_rec->tempo_ultima_alteracao_fila = clock_simulacao;
    
-   te = ponteiro_fila_eventos->event_time; /* remaining */
+   te = ponteiro_fila_eventos->event_time; 
    
    if (te == 0.0)
-   /* requisicao tinha sido bloqueada, vai para a cabeca da lista de eventos futuros
-      para ocorrencia imediata
-      
-      ponteiro_fila_eventos aponta para o no a ser liberado da fila de eventos do recurso */
+   
    
    {
     ponteiro_fila_eventos->prioridade = clock_simulacao;
     
-    /* atualiza campos da fila de eventos para a lista de eventos futuros do processo */
+    
     ponteiro_lista_eventos = aloca_mem_lista_eventos_futuros();
     if (ponteiro_lista_eventos == NULL)
       erro("Rotina: release() - Erro: alocar memoria para a lista de eventos futuros");
     
-    /*ponteiro_lista_eventos->ident_processo = proc_local;*/
+    
     
     ponteiro_lista_eventos->tempo_ocorrencia = ponteiro_fila_eventos->prioridade;
     ponteiro_lista_eventos->num_evento = ponteiro_fila_eventos->num_evento;
     ponteiro_lista_eventos->num_token = ponteiro_fila_eventos->num_token;
     
-    /* insere no na cabeca da lista de eventos futuros */
+    
     ponteiro_lista_eventos->prox_lista_eventos = lista_eventos_futuros;
     lista_eventos_futuros = ponteiro_lista_eventos;
     free(ponteiro_fila_eventos);
    }                                            
    else
    
-   /* se te > 0 evento foi preempted; entao deve-se alocar o servidor liberado para esse token 
- 
-      nesse caso reescalona o evento prar terminar de ocorrer com o tempo restante
-      
-      ponteiro_rec ponteiro para o recurso
-      ponteiro_serv_rec ponteiro para o server liberado                
-      ponteiro_fila_eventos  ponteiro para o evento retirado da fila de 
-        eventos do recurso                                                   */
+   
         
    {
     ponteiro_serv_rec->num_token = ponteiro_fila_eventos->num_token;
     ponteiro_serv_rec->prioridade_usuario = (int) ponteiro_fila_eventos->prioridade;
-    /* na fila de eventos prioridade e double ; ver declaracoes.h             */
     
     ponteiro_serv_rec->inicio_periodo_ocupado = clock_simulacao;
     
-    /* incrementa o numero de servidores ocupados do recurso */
+    
     ponteiro_rec->num_servidores_ocupados += 1;
     
-    /* aqui o trace pode ser gerado !!!!!!!!!!!!!!!!!!!!!!1 */
+    
 
     insere_lista_eventos_futuros(ponteiro_fila_eventos->num_evento,
                                     clock_simulacao+te,
                                     ponteiro_fila_eventos->num_token);
        
-    free(ponteiro_fila_eventos); /* libera o no da fila de eventos do recurso     */  
+    free(ponteiro_fila_eventos); /* libera o no da fila de eventos do recurso    
    }
  }
-}
+}*/
 
 /* ------------------------------------------------------------------------------------------------- */
 
@@ -671,17 +653,17 @@ void release(char *nome_recurso,int token,int nada)
 ---------------------------------------------------------------------------------------------------- */  
        
        
-void schedule (int num_evento, double te, int token)
+/*void schedule (int num_evento, double te, int token)
 {
-  int bufid; /* para retorno de erro da envia_mensagem */
+  int bufid; 
   
   
-  if (te < 0.0) /* nao existe tempo negativo */ 
+  if (te < 0.0) 
     erro("Rotina: schedule() - Erro: te menor que zero");
   else
     insere_lista_eventos_futuros(num_evento, te, token);
  
-}            
+}      */      
   
 /* ------------------------------------------------------------------------------------------------- */       
        
@@ -806,17 +788,14 @@ Entrada: char *nome_recurso     - numero do evento a ser escalonado
    
 ---------------------------------------------------------------------------------------------------- */  
 
-int request(char *nome_recurso, int evento, int token, int prioridade/*, int proc*/)
+/*int request(char *nome_recurso, int evento, int token, int prioridade)
 {
  tipo_descritor_recursos *ponteiro_rec;
  tipo_servidor_recursos *ponteiro_serv_rec;
  tipo_cabecalho *ponteiro_cab;
  int r;
  
- /* verifica se existem servidores livre; eh so olhar o numero de servidores
-    ocupados e o total de servidores do recurso                             */
-    
- /* primeiro procura pelo recurso identificado por nome_recurso */
+ 
  ponteiro_cab = cabecalho_descritor;
  
  while ( (ponteiro_cab != NULL) && 
@@ -826,42 +805,39 @@ int request(char *nome_recurso, int evento, int token, int prioridade/*, int pro
   if (ponteiro_cab == NULL)
     erro("Rotina: request() - Erro: recurso nao identificado");
     
-  /* recurso encontrado, busca por servidor livre */
+  
   ponteiro_rec = ponteiro_cab->pont_descritor;
   
   if ( ponteiro_rec->num_servidores_ocupados < ponteiro_rec->num_servidores )
   {
     ponteiro_serv_rec = ponteiro_cab->pont_descritor->fila_servidor_recursos;
    
-   /* procura servidor livre */
+  
    ponteiro_serv_rec = ponteiro_cab->pont_descritor->fila_servidor_recursos;
   
    while ( (ponteiro_serv_rec != NULL) &&
            (ponteiro_serv_rec->num_token != 0) )
      ponteiro_serv_rec = ponteiro_serv_rec->prox_servidor_recursos;
      
-    /* ponteiro_serv_rec aponta para o servidor livre */
-    /* aloca servidor para o token                    */
+  
     
     ponteiro_serv_rec->num_token = token;
     ponteiro_serv_rec->prioridade_usuario = prioridade;
-    ponteiro_rec->num_servidores_ocupados++; /* incrementa total servidores ocupados */
+    ponteiro_rec->num_servidores_ocupados++; 
     ponteiro_serv_rec->inicio_periodo_ocupado = clock_simulacao;
     r = 0; 
    }
    else
    {
-    /* evento e variavel global - indica o evento corrente */
-    /* remaining evet time e zero para eventos bloqueados; se preempcao, e diferente de 
-       zero */
+   
        
-    insere_fila_eventos_recurso(nome_recurso, token, prioridade, /*proc,*/ evento, 0.0);
-    r = 1; /* indica requisicao bloqueada por falta de servidor */
+    insere_fila_eventos_recurso(nome_recurso, token, prioridade,  evento, 0.0);
+    r = 1; 
    }
    
    return(r);
  
-}
+}*/
 /* ------------------------------------------------------------------------------------------------- */
 
 
@@ -906,7 +882,7 @@ double tempo_cabeca_lista_eventos_futuros(void)
    ------------------------------------------------------------------------------------------------- */  
 
 
-void cause(int *evento, int *token)
+/*void cause(int *evento, int *token)
 {
  tipo_lista_eventos *ponteiro_lista_eventos, 
                     *aux;
@@ -918,7 +894,7 @@ void cause(int *evento, int *token)
   aux = lista_eventos_futuros;
   lista_eventos_futuros = lista_eventos_futuros->prox_lista_eventos; 
   free(aux);                  
-}
+}*/
 /* ------------------------------------------------------------------------------------------------- */
 
 
@@ -932,7 +908,7 @@ void cause(int *evento, int *token)
    ------------------------------------------------------------------------------------------------- */  
 
 
-void smpl(int m,char *modelo)
+/*void smpl(int m,char *modelo)
 {
  int indice;
  
@@ -943,6 +919,6 @@ void smpl(int m,char *modelo)
  start = 0.0;
  lista_eventos_futuros = NULL;
  cabecalho_descritor = NULL;
-}
+}*/
 /* ------------------------------------------------------------------------------------------------- */
 
