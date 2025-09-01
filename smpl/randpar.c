@@ -10,13 +10,7 @@
 
 #include <math.h>
 
-void erro(char *mensagem)
-{
- printf("\n %s \n",mensagem);
- smplx_exit();
-}
-
-      
+extern void erro(char *);
 
 #define A 16807L           /* multiplier (7**5) for 'ranf' */
 #define M 2147483647L      /* modulus (2**31-1) for 'ranf' */
@@ -138,5 +132,6 @@ double normal(double x,double s)
           }
       return(x+z1*s);
   }
+
 
 
