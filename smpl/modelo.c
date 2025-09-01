@@ -55,7 +55,7 @@ main()
              schedule(3,expntl(Ts1), Customer);
           break;
         case 3 : 
-          release(CS_1, Customer);
+          release("",CS_1, Customer);
           Aleatorio = randomX(1,10000);
           if (( 1 <= Aleatorio) && ( Aleatorio <= 2000) )
            schedule(4,0.0, Customer);
@@ -67,7 +67,7 @@ main()
              schedule(5,expntl(Ts2), Customer);
           break;
         case 5 : 
-          release(CS_2, Customer);
+          release("",CS_2, Customer);
              schedule(2,0.0, Customer);
           break;
  }
