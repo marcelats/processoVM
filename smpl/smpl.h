@@ -75,7 +75,7 @@ void init_bm(int m0,int mb);
 /*  ----------  for functions in rand.c  ---------------------------  */
 
 int stream(int n);
-int seed(int Ik, int n);
+long seed(long Ik, int n);
 int randomX(int i, int n);
 real ranf(void);
 real uniform(real a, real b);
