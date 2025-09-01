@@ -81,11 +81,11 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
             volumes={tmpdir: {"bind": "/workspace", "mode": "rw"}}
         container = client.containers.run(
     
-        "python-simpy",
+        image,
     
-        command = ["python", container_file_path],
+        command,
     
-        volumes={tmpdir: {'bind': '/workspace', 'mode': 'rw'}},
+        volumes,
     
         detach=False,
     
