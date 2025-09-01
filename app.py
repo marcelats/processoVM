@@ -161,7 +161,7 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
                 command = [
                     "bash", "-c",
                     # compila seu código + todos os .c da pasta smpl
-                    "gcc /workspace/code.c /smpl/*.c -I/smpl -o /workspace/a.out && /workspace/a.out"
+                    "gcc /workspace/code.c /smpl/*.c -I/smpl -o /workspace/a.out && /workspace/a.out -lm"
                 ]
                 image="c_runner:latest"
                 volumes = {
