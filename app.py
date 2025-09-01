@@ -151,10 +151,10 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
         #    command = []
         #    image = ""
         #    volumes = {}
-        #    if lang.lower() == "python":
-        #        command = ["python", container_file_path]
-        #        image = "python-simpy"
-        #        volumes={tmpdir: {"bind": "/workspace", "mode": "rw"}}
+            if lang.lower() == "python":
+                command = ["python", container_file_path]
+                image = "python-simpy"
+                volumes={tmpdir: {"bind": "/workspace", "mode": "rw"}}
             elif lang.lower() == "c smpl":
                 LIBS_DIR = "/opt/smpl"
                 language = [
