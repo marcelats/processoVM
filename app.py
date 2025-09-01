@@ -88,7 +88,7 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
     
         "python-simpy",
     
-        command=["ls", "-l", "/workspace"],
+        command = ["python", container_file_path],
     
         volumes={tmpdir: {'bind': '/workspace', 'mode': 'rw'}},
     
