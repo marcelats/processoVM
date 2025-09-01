@@ -118,7 +118,7 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
         file_name=""
         if lang.lower() == "python":
             file_name = "code.py"
-        elif lang.lower() == "c smpl":
+        elif lang.lower() == "c smpl" || lang.lower() == "c smplx":
             file_name = "code.c"
         else:
             file_name = "code.r"
@@ -167,6 +167,18 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
                 volumes = {
                     tmpdir: {"bind": "/workspace", "mode": "rw"},
                     LIBS_DIR: {"bind": "/smpl", "mode": "ro"},
+                }
+            elif lang.lower() == "c smplx":
+                LIBS_DIR = "/home/ubuntu/smplx"
+                command = [
+                    "bash", "-c",
+                    "gcc /workspace/code.c /smplx/*.c -I/smplx -lm -o /workspace/a.out && /workspace/a.out"
+                ]
+
+                image="c_runner:latest"
+                volumes = {
+                    tmpdir: {"bind": "/workspace", "mode": "rw"},
+                    LIBS_DIR: {"bind": "/smplx", "mode": "ro"},
                 }
             else:
                 command = ["Rscript", container_file_path]
