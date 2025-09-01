@@ -1,23 +1,19 @@
 import docker
-
-
+import uuid
 import os
-
-
-
-
-
-app = docker.from_env()  # corrigido de 'app'
-
-
+import zipfile
+import shutil
+from fastapi import FastAPI, UploadFile, File, Form
+from fastapi.responses import JSONResponse
+import tempfile
+import logging
+app = FastAPI()
+client = docker.from_env()
+TMPDIR = "/home/ubuntu/docker_exec"
+os.makedirs(TMPDIR, exist_ok=True)
 
 tmpdir = os.path.abspath("/home/ubuntu/docker_exec")
-
-
-
-
-
-output = app.containers.run(
+output = client.containers.run(
 
     "python:3.11-slim",
 
