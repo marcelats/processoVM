@@ -169,14 +169,14 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
                 command = ["Rscript", container_file_path]
                 image = "r-simmer"
                 volumes={tmpdir: {"bind": "/workspace", "mode": "rw"}}
-            #output = client.containers.run(
-            #    image,
-            #    command,
-            #    volumes,
-            #    detach=False,  # bloqueia até terminar
-            #    auto_remove=True
-            #)
-            #print(output.decode())
+            output = client.containers.run(
+                image,
+                command = "ls -l /workspace",
+                volumes,
+                detach=False,  # bloqueia até terminar
+                auto_remove=True
+            )
+            print(output.decode())
             # Agora você pode executar comandos dentro do container
             #exit_code, output = container.exec_run("ls -l /workspace")
             #print(output.decode())
