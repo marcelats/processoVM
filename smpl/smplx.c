@@ -347,7 +347,7 @@ double time()
    ------------------------------------------------------------------------------------------------- */   
 
 
-void facility(char *nome_recurso, int num_serv)
+int facility(char *nome_recurso, int num_serv)
 {
  int indice;                    /* para alocar total de nos = num_serv */
  tipo_descritor_recursos *ponteiro_rec;  /* ponteiro para o no recurso */
