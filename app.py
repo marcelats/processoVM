@@ -190,6 +190,7 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
             #container.remove()
         finally:
         # Apaga o arquivo enviado pelo cliente para não encher a VM
-            if os.path.exists(host_file_path):
-                os.remove(host_file_path)
-                print(f"Arquivo {host_file_path} removido.")
+            print("oi")
+            #if os.path.exists(host_file_path):
+            #    os.remove(host_file_path)
+            #    print(f"Arquivo {host_file_path} removido.")
