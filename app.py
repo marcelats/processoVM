@@ -126,10 +126,10 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
         print("host_file_path:")
         print(host_file_path)
         # Grava o código do cliente
-        #with open(host_file_path, "wb") as f:
-        #    f.write(contents)
-        #    print("f:")
-        #    print(f)
+        with open(host_file_path, "wb") as f:
+            f.write(contents)
+            print("f:")
+            print(f)
         #with open(host_file_path, "rb") as f:
         #    print("dentro de f:")
         #    print(f.read(100))
