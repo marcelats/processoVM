@@ -116,12 +116,12 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
         print("tmpdir:")
         print(tmpdir)
         file_name=""
-        if lang.lower() == "python":
-            file_name = "code.py"
+        if lang.lower() == "r":
+            file_name = "code.r"
         elif lang.lower() == "c smpl" or lang.lower() == "c smplx":
             file_name = "code.c"
         else:
-            file_name = "code.r"
+            file_name = "code.py"
         print("file_name:")
         print(file_name)
         host_file_path = os.path.join(tmpdir, file_name)
