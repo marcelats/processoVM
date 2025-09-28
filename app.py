@@ -1,4 +1,5 @@
 import docker
+import requests
 import uuid
 import os
 import zipfile
@@ -58,6 +59,7 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
                 "-d", "/workspace/out"
             ] + java_files
             shutil.copy(jar_path, project_path)
+            
             container = client.containers.run(
                 "java-17-slim",           # Nome da imagem que você construiu
                 command=compile_cmd,
@@ -68,17 +70,12 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
                 detach=False,
                 auto_remove=True
             )
-            #exit_code = container.wait()
-            #logs = container.logs(stdout=True, stderr=True)
-            #print("Exit code:", exit_code)
-            #print(logs.decode("utf-8"))
-            #container.remove()
-            # Depois, roda a classe principal
             run_cmd = [
                 "java",
                 "-cp", "/workspace/out:/workspace/javasim-2.3.jar",
                 "com.javasim.teste.basic.Main"
             ]
+            
             container = client.containers.run(
                 "java-17-slim",
                 command=run_cmd,
@@ -88,18 +85,24 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
                 working_dir="/workspace",
                 detach=True,
                 auto_remove=False
+                mem_limit="512m",     # 512 MB RAM
             )
-            exit_code = container.wait()["StatusCode"]
-    
-            logs = container.logs(stdout=True, stderr=True).decode()
+
+            try:
+                exit_code = container.wait(timeout=10)["StatusCode"]  # tempo limite de 10s
+                except requests.exceptions.ReadTimeout:
+                    print("Exceeded limit time")
+                    container.kill()
+                    exit_code = -1
+                
+                logs = container.logs(stdout=True, stderr=True).decode()
+                container.remove()
             
             print("Logs completos:")
             print(logs)
             
             if exit_code != 0:
-                print("O container terminou com erro:", exit_code)
-            
-            container.remove()
+                print("Error in container", exit_code)
 
         finally:
             # Limpeza
@@ -184,22 +187,24 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
                 command = ["Rscript", container_file_path]
                 image = "r-simmer"
                 volumes={tmpdir: {"bind": "/workspace", "mode": "rw"}}
+            
             container = client.containers.run(
-        
             image,
-        
             command=command,
-        
             volumes=volumes,
-        
             detach=True,
-        
-            auto_remove=False
-        
+            auto_remove=False,
+            mem_limit="512m"
         )
-            exit_code = container.wait()["StatusCode"]
-    
+            try:
+                exit_code = container.wait(timeout=10)["StatusCode"]  # tempo limite de 10s
+            except requests.exceptions.ReadTimeout:
+                print("Exceeded limit time")
+                container.kill()
+                exit_code = -1
+            
             logs = container.logs(stdout=True, stderr=True).decode()
+            container.remove()
             
             print("Logs completos:")
             print(logs)
@@ -207,12 +212,8 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
             if exit_code != 0:
                 print("O container terminou com erro:", exit_code)
             
-            container.remove()
-            #logs = container.decode("utf-8")
-            #container.stop()
-            #container.remove()
+
         except docker.errors.ContainerError as e:
-        # esse erro é lançado se o exit code != 0
             print("Erro no container!")
             print("Saída de erro (stderr):")
             print(e.stderr)
