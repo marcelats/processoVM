@@ -95,8 +95,8 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
                     container.kill()
                     exit_code = -1
                 
-                logs = container.logs(stdout=True, stderr=True).decode()
-                container.remove()
+            logs = container.logs(stdout=True, stderr=True).decode()
+            container.remove()
             
             print("Logs completos:")
             print(logs)
