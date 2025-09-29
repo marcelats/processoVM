@@ -8,6 +8,7 @@ from fastapi import FastAPI, UploadFile, File, Form
 from fastapi.responses import JSONResponse
 import tempfile
 import logging
+from docker.types import LogConfig
 app = FastAPI()
 client = docker.from_env()
 TMPDIR = "/home/ubuntu/docker_exec"
