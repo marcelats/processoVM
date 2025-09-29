@@ -58,8 +58,7 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
                 "-cp", "/workspace/javasim-2.3.jar",
                 "-d", "/workspace/out"
             ] + java_files
-            shutil.copy(jar_path, project_path)
-            
+            shutil.copy(jar_path, project_path) 
             container = client.containers.run(
                 "java-17-slim",           # Nome da imagem que você construiu
                 command=compile_cmd,
@@ -75,7 +74,7 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
                 "-cp", "/workspace/out:/workspace/javasim-2.3.jar",
                 "com.javasim.teste.basic.Main"
             ]
-            
+            log_config = LogConfig(type="none")
             container = client.containers.run(
                 "java-17-slim",
                 command=run_cmd,
@@ -85,7 +84,8 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
                 working_dir="/workspace",
                 detach=True,
                 auto_remove=False,
-                mem_limit="512m"     # 512 MB RAM
+                mem_limit="512m",     # 512 MB RAM
+                log_config=log_config
             )
 
             try:
@@ -187,14 +187,15 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
                 command = ["Rscript", container_file_path]
                 image = "r-simmer"
                 volumes={tmpdir: {"bind": "/workspace", "mode": "rw"}}
-            
+            log_config = LogConfig(type="none")
             container = client.containers.run(
             image,
             command=command,
             volumes=volumes,
             detach=True,
             auto_remove=False,
-            mem_limit="512m"
+            mem_limit="512m",
+            log_config=log_config
         )
             try:
                 exit_code = container.wait(timeout=10)["StatusCode"]  # tempo limite de 10s
