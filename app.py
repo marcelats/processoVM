@@ -90,7 +90,7 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
 
             try:
                 exit_code = container.wait(timeout=10)["StatusCode"]  # tempo limite de 10s
-                except requests.exceptions.ReadTimeout:
+            except requests.exceptions.ReadTimeout:
                     print("Exceeded limit time")
                     container.kill()
                     exit_code = -1
