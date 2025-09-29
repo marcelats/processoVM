@@ -84,8 +84,8 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
                 },
                 working_dir="/workspace",
                 detach=True,
-                auto_remove=False
-                mem_limit="512m",     # 512 MB RAM
+                auto_remove=False,
+                mem_limit="512m"     # 512 MB RAM
             )
 
             try:
