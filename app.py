@@ -75,7 +75,13 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
                 "-cp", "/workspace/out:/workspace/javasim-2.3.jar",
                 "com.javasim.teste.basic.Main"
             ]
-            log_config = LogConfig(type="none")
+            log_config = LogConfig(
+                type="json-file",
+                config={
+                    "max-size": "10m",   # tamanho máximo de cada arquivo de log
+                    "max-file": "1"      # quantidade máxima de arquivos de log
+                }
+            )
             container = client.containers.run(
                 "java-17-slim",
                 command=run_cmd,
@@ -188,7 +194,13 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
                 command = ["Rscript", container_file_path]
                 image = "r-simmer"
                 volumes={tmpdir: {"bind": "/workspace", "mode": "rw"}}
-            log_config = LogConfig(type="none")
+            log_config = LogConfig(
+                type="json-file",
+                config={
+                    "max-size": "10m",   # tamanho máximo de cada arquivo de log
+                    "max-file": "1"      # quantidade máxima de arquivos de log
+                }
+            )
             container = client.containers.run(
             image,
             command=command,
@@ -205,7 +217,7 @@ async def execute(code: UploadFile = File(...), lang: str = Form(...)):
                 container.kill()
                 exit_code = -1
             
-            #logs = container.logs(stdout=True, stderr=True).decode()
+            logs = container.logs(stdout=True, stderr=True).decode()
             container.remove()
             
             print("Logs completos:")
